@@ -1,6 +1,5 @@
 # gcs_signed_url - Create Signed URLs for Google Cloud Storage
-
-# gcs_signed_url [![Travis](https://travis-ci.org/alexandrubagu/gcs_signed_url.svg)](https://travis-ci.org/alexandrubagu/gcs_signed_url) [![Hex.pm](https://img.shields.io/hexpm/v/gcs_signed_url.svg?maxAge=2592000)](https://hex.pm/packages/gcs_signed_url) [![Hex.pm](https://img.shields.io/hexpm/dt/gcs_signed_url.svg?maxAge=2592000)](https://hex.pm/packages/gcs_signed_url) [![Hex.pm](https://img.shields.io/hexpm/l/gcs_signed_url.svg?maxAge=2592000)](https://hex.pm/packages/gcs_signed_url) [![Coverage Status](https://coveralls.io/repos/github/alexandrubagu/gcs_signed_url/badge.svg?branch=master)](https://coveralls.io/github/alexandrubagu/gcs_signed_url?branch=master)
+[![Travis](https://travis-ci.org/alexandrubagu/gcs_signed_url.svg)](https://travis-ci.org/alexandrubagu/gcs_signed_url) [![Hex.pm](https://img.shields.io/hexpm/v/gcs_signed_url.svg?maxAge=2592000)](https://hex.pm/packages/gcs_signed_url) [![Hex.pm](https://img.shields.io/hexpm/dt/gcs_signed_url.svg?maxAge=2592000)](https://hex.pm/packages/gcs_signed_url) [![Hex.pm](https://img.shields.io/hexpm/l/gcs_signed_url.svg?maxAge=2592000)](https://hex.pm/packages/gcs_signed_url) [![Coverage Status](https://coveralls.io/repos/github/alexandrubagu/gcs_signed_url/badge.svg?branch=master)](https://coveralls.io/github/alexandrubagu/gcs_signed_url?branch=master)
 
 ## Hex Installation 
 
