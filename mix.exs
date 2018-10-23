@@ -31,7 +31,8 @@ defmodule GcsSignedUrl.MixProject do
       {:dialyxir, "~> 0.5", only: [:dev], runtime: false},
       {:credo, "~> 0.10.0", only: [:dev, :test], runtime: false},
       {:excoveralls, "~> 0.10", only: :test},
-      {:jason, "~> 1.1"}
+      {:jason, "~> 1.1"},
+      {:ex_doc, ">= 0.0.0"}
     ]
   end
 
