@@ -4,8 +4,9 @@ defmodule GcsSignedUrl.MixProject do
   def project do
     [
       app: :gcs_signed_url,
-      version: "0.1.0",
-      elixir: "~> 1.5",
+      version: "1.0.0",
+      elixir: "~> 1.8",
+      elixirc_paths: elixirc_paths(Mix.env()),
       package: package(),
       start_permanent: Mix.env() == :prod,
       deps: deps(),
@@ -29,12 +30,16 @@ defmodule GcsSignedUrl.MixProject do
   defp deps do
     [
       {:dialyxir, "~> 0.5", only: [:dev], runtime: false},
-      {:credo, "~> 0.10.0", only: [:dev, :test], runtime: false},
-      {:excoveralls, "~> 0.10", only: :test},
-      {:jason, "~> 1.1"},
-      {:ex_doc, ">= 0.0.0"}
+      {:credo, "~> 1.4", only: [:dev, :test], runtime: false},
+      {:excoveralls, "~> 0.12.3", only: :test},
+      {:jason, "~> 1.2"},
+      {:ex_doc, "~> 0.21"}
     ]
   end
+
+  # Specifies which paths to compile per environment.
+  defp elixirc_paths(:test), do: ["lib", "test_support"]
+  defp elixirc_paths(_), do: ["lib"]
 
   defp package do
     [
