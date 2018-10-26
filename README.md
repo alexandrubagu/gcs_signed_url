@@ -3,7 +3,7 @@
 
 ## Hex Installation 
 
-Add `simplehttp` to your list of dependencies in `mix.exs`:
+Add `gcs_signed_url` to your list of dependencies in `mix.exs`:
 
 ```elixir
 def deps do
@@ -24,7 +24,8 @@ iex> service_account = service_account_json_string |> Jason.decode!
 iex> GcsSignedUrl.Client.load(service_account)
 ```
  
- 2. Generate signed url
+ 2. Generate signed url 
  ```elixir
  GcsSignedUrl.generate(client, "my-bucket", "my-object.mp4")
+ GcsSignedUrl.generate(client, "my-bucket", "my-object.mp4", expires: GcsSignedUrl.hours_after(3))
  ```
