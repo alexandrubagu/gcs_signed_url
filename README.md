@@ -26,8 +26,14 @@ or
 iex> service_account = service_account_json_string |> Jason.decode!
 iex> GcsSignedUrl.Client.load(service_account)
 ```
- 
- 2. Generate signed url 
+
+ 2. Generate signed url with new v4 generator
+ ```elixir
+ GcsSignedUrlV4.generate(client, "my-bucket", "my-object.mp4")
+ GcsSignedUrlV4.generate(client, "my-bucket", "my-object.mp4", verb: "PUT", expires: 1500, headers: [{:"Content-Type", "application/json"}])
+ ```
+
+ 3. Generate signed url with old v2 generator
  ```elixir
  GcsSignedUrl.generate(client, "my-bucket", "my-object.mp4")
  GcsSignedUrl.generate(client, "my-bucket", "my-object.mp4", expires: GcsSignedUrl.hours_after(3))
