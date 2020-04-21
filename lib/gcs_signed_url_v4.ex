@@ -48,16 +48,22 @@ defmodule GcsSignedUrlV4 do
     credential_scope = "#{now_date}/auto/storage/goog4_request"
 
     headers = [host: @host] ++ opt_headers
+              |> Enum.sort_by(&(String.downcase("#{elem(&1,0)}")))
+              |> Enum.flat_map_reduce({}, &group_concat/2)
+              |> (&(elem(&1, 0) ++ [elem(&1, 1)])).()
+              |> Enum.reject(fn x -> x == {} end)
+
     signed_headers = create_signed_headers(headers)
 
     query_string =
       [
-        {:"X-Goog-Algorithm", @goog_sign_algorithm},
-        {:"X-Goog-Credential", "#{client.client_email}/#{credential_scope}"},
-        {:"X-Goog-Date", now_iso},
-        {:"X-Goog-SignedHeaders", signed_headers},
-        {:"X-Goog-Expires", expires},
+        "X-Goog-Algorithm": @goog_sign_algorithm,
+        "X-Goog-Credential": "#{client.client_email}/#{credential_scope}",
+        "X-Goog-Date": now_iso,
+        "X-Goog-SignedHeaders": signed_headers,
+        "X-Goog-Expires": expires,
       ] ++ opt_query_params
+      |> Enum.sort()
       |> URI.encode_query()
 
     canonical_request = create_canonical_request(verb, resource, query_string, headers, signed_headers)
@@ -78,9 +84,6 @@ defmodule GcsSignedUrlV4 do
 
   defp create_canonical_request(verb, resource, query_string, headers, signed_headers) do
     canonical_headers = headers
-                        |> Enum.sort()
-                        |> Enum.flat_map_reduce({nil,nil}, &group_concat/2)
-                        |> (&(elem(&1, 0) ++ [elem(&1, 1)])).()
                         |> Enum.map(
                              fn ({k, v}) -> "#{String.downcase(Atom.to_string(k))}:#{String.downcase(v)}\n" end
                            )
@@ -95,7 +98,7 @@ defmodule GcsSignedUrlV4 do
 
   defp create_signed_headers(headers), do: headers
                                            |> Keyword.keys()
-                                           |> Enum.sort
+                                           |> Enum.map(&String.downcase("#{&1}"))
                                            |> Enum.join(";")
 
   defp generate_signature(string, client) do
@@ -114,10 +117,11 @@ defmodule GcsSignedUrlV4 do
     |> :public_key.pem_entry_decode()
   end
 
-  def group_concat({k, v}, {acc_k, acc_v}) do
-    case k do
-      ^acc_k -> {[{k, "#{acc_v},#{v}"}], {nil, nil}}
-      _ -> {[], {k, v}}
+  def group_concat({k, v}, acc) do
+    case acc do
+      {} -> {[], {k, v}}
+      {^k, acc_v} -> {[{k, "#{acc_v},#{v}"}], {}}
+      _ -> {[acc], {k, v}}
     end
   end
 end
