@@ -21,7 +21,8 @@ defmodule GcsSignedUrl.ISODateTime do
   @spec generate(DateTime.t()) :: __MODULE__.t()
   @spec generate() :: __MODULE__.t()
   def generate(date_time) do
-    date_time = date_time |> DateTime.shift_zone!("Etc/UTC") |> DateTime.truncate(:second)
+    {:ok, date_time} = DateTime.shift_zone(date_time, "Etc/UTC")
+    date_time = DateTime.truncate(date_time, :second)
     iso_date_time = DateTime.to_iso8601(date_time, :basic)
     iso_date = date_time
            |> DateTime.to_date()
