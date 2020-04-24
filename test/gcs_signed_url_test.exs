@@ -36,11 +36,23 @@ defmodule GcsSignedUrlTest do
     test "Generates a URL with v4 parameters" do
       client = GcsSignedUrl.Client.load("test/gcs_config_sample.json")
 
-      valid_from = %DateTime{year: 2000, month: 2, day: 29, zone_abbr: "AMT",
-        hour: 23, minute: 0, second: 7, microsecond: {0, 0},
-        utc_offset: 7200, std_offset: 0, time_zone: "Europe/Zurich"}
+      valid_from = %DateTime{
+        year: 2000,
+        month: 2,
+        day: 29,
+        zone_abbr: "AMT",
+        hour: 23,
+        minute: 0,
+        second: 7,
+        microsecond: {0, 0},
+        utc_offset: 7200,
+        std_offset: 0,
+        time_zone: "Europe/Zurich"
+      }
 
-      signed_url = MUT.generate_v4(client, "bucket", "object.jpg", valid_from: valid_from, expires: 123)
+      signed_url =
+        MUT.generate_v4(client, "bucket", "object.jpg", valid_from: valid_from, expires: 123)
+
       signed_url_parts = URI.parse(signed_url)
 
       query_string =
@@ -53,7 +65,10 @@ defmodule GcsSignedUrlTest do
       assert is_map(query_string)
       assert "20000229T210007Z" == Map.get(query_string, "X-Goog-Date")
       assert "123" == Map.get(query_string, "X-Goog-Expires")
-      assert "#{ClientFixtures.client_from_json().client_email}/20000229/auto/storage/goog4_request" == Map.get(query_string, "X-Goog-Credential")
+
+      assert "#{ClientFixtures.client_from_json().client_email}/20000229/auto/storage/goog4_request" ==
+               Map.get(query_string, "X-Goog-Credential")
+
       assert "GOOG4-RSA-SHA256" == Map.get(query_string, "X-Goog-Algorithm")
       assert Map.has_key?(query_string, "X-Goog-Signature")
     end

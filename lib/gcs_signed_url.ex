@@ -9,19 +9,19 @@ defmodule GcsSignedUrl do
   @base_url "https://#{@host}"
 
   @type sign_v2_opts :: [
-                          verb: String.t(),
-                          md5_digest: String.t(),
-                          content_type: String.t(),
-                          expires: integer()
-                        ]
+          verb: String.t(),
+          md5_digest: String.t(),
+          content_type: String.t(),
+          expires: integer()
+        ]
 
   @type sign_v4_opts :: [
-                          verb: String.t(),
-                          headers: Keyword.t(),
-                          query_params: Keyword.t(),
-                          valid_from: DateTime.t(),
-                          expires: integer,
-                        ]
+          verb: String.t(),
+          headers: Keyword.t(),
+          query_params: Keyword.t(),
+          valid_from: DateTime.t(),
+          expires: integer
+        ]
 
   @doc """
   Generate signed url.
@@ -92,7 +92,17 @@ defmodule GcsSignedUrl do
     credential_scope = "#{iso_date_time.date}/auto/storage/goog4_request"
 
     headers = Headers.create([host: @host] ++ additional_headers)
-    query_string = QueryString.create(client, credential_scope, iso_date_time, headers, expires, additional_query_params)
+
+    query_string =
+      QueryString.create(
+        client,
+        credential_scope,
+        iso_date_time,
+        headers,
+        expires,
+        additional_query_params
+      )
+
     canonical_request = CanonicalRequest.create(verb, resource, query_string, headers)
 
     string_to_sign = StringToSign.create(iso_date_time, credential_scope, canonical_request)

@@ -3,9 +3,9 @@ defmodule GcsSignedUrl.Headers do
   Transforms headers for a request to representations required by the Google URL signature algorithm
   """
   @type t :: %__MODULE__{
-               signed: String.t(),
-               canonical: String.t()
-             }
+          signed: String.t(),
+          canonical: String.t()
+        }
 
   @fields [
     :signed,
@@ -25,14 +25,15 @@ defmodule GcsSignedUrl.Headers do
   """
   @spec create(Keyword.t()) :: __MODULE__.t()
   def create(headers) do
-    headers = headers
-              |> Enum.map(fn ({k, v}) -> {String.downcase("#{k}"), String.replace(v, ~r/[\r\n]/, " ")} end)
-              |> Enum.sort(fn ({k1, _}, {k2, _}) -> k1 <= k2 end)
-              |> group_concat()
+    headers =
+      headers
+      |> Enum.map(fn {k, v} -> {String.downcase("#{k}"), String.replace(v, ~r/[\r\n]/, " ")} end)
+      |> Enum.sort(fn {k1, _}, {k2, _} -> k1 <= k2 end)
+      |> group_concat()
 
     %__MODULE__{
       signed: create_signed_headers(headers),
-      canonical: create_canonical_headers(headers),
+      canonical: create_canonical_headers(headers)
     }
   end
 
@@ -43,14 +44,14 @@ defmodule GcsSignedUrl.Headers do
   end
 
   defp create_canonical_headers(headers) do
-    Enum.map_join(headers, fn ({k, v}) -> "#{k}:#{v}\n" end)
+    Enum.map_join(headers, fn {k, v} -> "#{k}:#{v}\n" end)
   end
 
   defp group_concat(list) do
     Enum.flat_map_reduce(
       list,
       [],
-      fn ({k, v}, acc) ->
+      fn {k, v}, acc ->
         case acc do
           [] -> {[], [{k, v}]}
           [{^k, acc_v}] -> {[], [{k, "#{acc_v},#{v}"}]}

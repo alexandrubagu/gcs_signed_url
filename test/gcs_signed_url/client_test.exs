@@ -4,7 +4,6 @@ defmodule GcsSignedUrl.ClientTest do
   alias GcsSignedUrl.Fixtures.Client, as: Fixtures
 
   describe "load/1" do
-
     test "returns client struct for correct file" do
       client = MUT.load("test/gcs_config_sample.json")
       assert client.__struct__ == MUT
@@ -25,7 +24,7 @@ defmodule GcsSignedUrl.ClientTest do
       client = MUT.load("test/gcs_config_sample.json")
       private_key = MUT.get_decoded_private_key(client)
 
-      assert Fixtures.decoded_private_key_from_json == private_key
+      assert Fixtures.decoded_private_key_from_json() == private_key
     end
   end
 end
