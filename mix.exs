@@ -4,7 +4,7 @@ defmodule GcsSignedUrl.MixProject do
   def project do
     [
       app: :gcs_signed_url,
-      version: "1.0.0",
+      version: "0.2.0",
       elixir: "~> 1.8",
       elixirc_paths: elixirc_paths(Mix.env()),
       package: package(),
