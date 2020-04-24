@@ -37,6 +37,12 @@ defmodule GcsSignedUrl.Client do
   end
 
   @doc """
+  Same as load_from_file/1
+  """
+  @spec load(String.t()) :: __MODULE__.t()
+  def load(path), do: load_from_file(path)
+
+  @doc """
   Initialize GcsSignedUrl.Client using a config file.
 
   ## Examples
@@ -46,7 +52,7 @@ defmodule GcsSignedUrl.Client do
       %GcsSignedUrl.Client{...}
 
   """
-  @spec load(String.t()) :: __MODULE__.t()
+  @spec load_from_file(String.t()) :: __MODULE__.t()
   def load_from_file(path) when is_binary(path) do
     with {:ok, content} <- File.read(path),
          {:ok, config} <- Jason.decode(content) do
@@ -55,4 +61,16 @@ defmodule GcsSignedUrl.Client do
   end
 
   def load_from_file(_), do: {:error, "Please provide a path for config"}
+
+  @doc """
+  Creates a PEM binary from the given client's private_key and decodes it.
+  """
+  @spec get_decoded_private_key(__MODULE__.t()) :: tuple
+  def get_decoded_private_key(%__MODULE__{private_key: private_key}) do
+    private_key
+    |> :public_key.pem_decode()
+    |> (fn [x] -> x end).()
+    |> :public_key.pem_entry_decode()
+  end
+
 end
