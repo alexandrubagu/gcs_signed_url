@@ -8,7 +8,9 @@ defmodule GcsSignedUrl.CanonicalRequestTest do
       headers = HeadersFixtures.headers_2()
 
       canonical_request = MUT.create("GET", "bucket/object.jpg", "foo=bar&alpha=beta", headers)
-      assert "GET\nbucket/object.jpg\nfoo=bar&alpha=beta\n#{headers.canonical}\n#{headers.signed}\nUNSIGNED-PAYLOAD" == canonical_request
+
+      assert "GET\nbucket/object.jpg\nfoo=bar&alpha=beta\n#{headers.canonical}\n#{headers.signed}\nUNSIGNED-PAYLOAD" ==
+               canonical_request
     end
   end
 end

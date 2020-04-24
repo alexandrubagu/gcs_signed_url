@@ -4,9 +4,9 @@ defmodule GcsSignedUrl.ISODateTime do
   """
 
   @type t :: %__MODULE__{
-               date: String.t(),
-               datetime: String.t()
-             }
+          date: String.t(),
+          datetime: String.t()
+        }
 
   @fields [
     :date,
@@ -24,14 +24,17 @@ defmodule GcsSignedUrl.ISODateTime do
     {:ok, date_time} = DateTime.shift_zone(date_time, "Etc/UTC")
     date_time = DateTime.truncate(date_time, :second)
     iso_date_time = DateTime.to_iso8601(date_time, :basic)
-    iso_date = date_time
-           |> DateTime.to_date()
-           |> Date.to_iso8601(:basic)
+
+    iso_date =
+      date_time
+      |> DateTime.to_date()
+      |> Date.to_iso8601(:basic)
 
     %__MODULE__{
       date: iso_date,
-      datetime: iso_date_time,
+      datetime: iso_date_time
     }
   end
+
   def generate(), do: generate(DateTime.utc_now())
 end

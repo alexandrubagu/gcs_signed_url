@@ -72,5 +72,4 @@ defmodule GcsSignedUrl.Client do
     |> (fn [x] -> x end).()
     |> :public_key.pem_entry_decode()
   end
-
 end
