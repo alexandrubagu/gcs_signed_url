@@ -12,5 +12,6 @@ script: |
   mix deps.get
   mix compile
   mix format --check-formatted
+  mix credo
   mix test
   mix coveralls.travis
