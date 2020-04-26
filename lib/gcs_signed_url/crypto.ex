@@ -11,7 +11,7 @@ defmodule GcsSignedUrl.Crypto do
 
   ## Examples
 
-      iex> GcsSignedUrl.Crypto.sign("foo", %GcsSignedUrl.Client{private_key: "-----BEGIN RSA PRIVATE KEY-----..."})
+      iex> GcsSignedUrl.Crypto.sign32("foo", %GcsSignedUrl.Client{private_key: "-----BEGIN RSA PRIVATE KEY-----..."})
       "1fad6186e41f577a37f56589..."
   """
   @spec sign16(String.t(), Client.t()) :: String.t()
@@ -30,7 +30,7 @@ defmodule GcsSignedUrl.Crypto do
 
   ## Examples
 
-      iex> GcsSignedUrl.Crypto.sign("foo", %GcsSignedUrl.Client{private_key: "-----BEGIN RSA PRIVATE KEY-----..."})
+      iex> GcsSignedUrl.Crypto.sign64("foo", %GcsSignedUrl.Client{private_key: "-----BEGIN RSA PRIVATE KEY-----..."})
       "1fad6186e41f577a37f56589..."
   """
   @spec sign64(String.t(), Client.t()) :: String.t()
