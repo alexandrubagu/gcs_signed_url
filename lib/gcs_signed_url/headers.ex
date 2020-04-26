@@ -48,17 +48,8 @@ defmodule GcsSignedUrl.Headers do
   end
 
   defp group_concat(list) do
-    Enum.flat_map_reduce(
-      list,
-      [],
-      fn {k, v}, acc ->
-        case acc do
-          [] -> {[], [{k, v}]}
-          [{^k, acc_v}] -> {[], [{k, "#{acc_v},#{v}"}]}
-          _ -> {acc, [{k, v}]}
-        end
-      end
-    )
-    |> (&(elem(&1, 0) ++ elem(&1, 1))).()
+    list
+    |> Enum.group_by(&elem(&1, 0), &(&1 |> elem(1)))
+    |> Enum.map(fn {k, v} -> {k, Enum.join(v, ",")} end)
   end
 end
