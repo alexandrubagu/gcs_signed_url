@@ -5,21 +5,14 @@ defmodule GcsSignedUrl.CryptoTest do
   alias GcsSignedUrl.MockSetup.Crypto, as: MockSetup
   alias GcsSignedUrl.Fixtures.Crypto, as: Fixtures
 
-  describe "sign16/1" do
-    test "returns the signed hex string correctly" do
+  describe "sign/2 with client" do
+    test "returns the signature correctly" do
       client = GcsSignedUrl.Client.load("test/gcs_config_sample.json")
-      assert Fixtures.foo_signed_16() == MUT.sign16("foo", client)
+      assert Fixtures.foo_signed_64() == MUT.sign("foo", client) |> Base.encode64()
     end
   end
 
-  describe "sign64/1" do
-    test "returns the signed base64 string correctly" do
-      client = GcsSignedUrl.Client.load("test/gcs_config_sample.json")
-      assert Fixtures.foo_signed_64() == MUT.sign64("foo", client)
-    end
-  end
-
-  describe "sign_via_api/2" do
+  describe "sign/2 with OAuth config" do
     setup do
       [
         oauth_config: %SignBlob.OAuthConfig{
@@ -34,16 +27,16 @@ defmodule GcsSignedUrl.CryptoTest do
       oauth_config: oauth_config,
       string_to_sign: string_to_sign
     } do
-      MockSetup.sign_via_api()
-      assert {:ok, "signature"} == MUT.sign_via_api(string_to_sign, oauth_config)
+      MockSetup.sign()
+      assert {:ok, "signature"} == MUT.sign(string_to_sign, oauth_config)
     end
 
     test "returns error with details upon 401 response from API", %{
       oauth_config: oauth_config,
       string_to_sign: string_to_sign
     } do
-      MockSetup.sign_via_api(error: :unauthenticated)
-      assert {:error, message} = MUT.sign_via_api(string_to_sign, oauth_config)
+      MockSetup.sign(error: :unauthenticated)
+      assert {:error, message} = MUT.sign(string_to_sign, oauth_config)
       assert message =~ ~r/Make sure the access_token/
     end
 
@@ -51,8 +44,8 @@ defmodule GcsSignedUrl.CryptoTest do
       oauth_config: oauth_config,
       string_to_sign: string_to_sign
     } do
-      MockSetup.sign_via_api(error: :permission_denied)
-      assert {:error, message} = MUT.sign_via_api(string_to_sign, oauth_config)
+      MockSetup.sign(error: :permission_denied)
+      assert {:error, message} = MUT.sign(string_to_sign, oauth_config)
       assert message =~ ~r/Make sure the authorized SA/
     end
 
@@ -60,16 +53,16 @@ defmodule GcsSignedUrl.CryptoTest do
       oauth_config: oauth_config,
       string_to_sign: string_to_sign
     } do
-      MockSetup.sign_via_api(error: :other_api_error)
-      assert {:error, _message} = MUT.sign_via_api(string_to_sign, oauth_config)
+      MockSetup.sign(error: :other_api_error)
+      assert {:error, _message} = MUT.sign(string_to_sign, oauth_config)
     end
 
     test "returns error with details if there's network problems", %{
       oauth_config: oauth_config,
       string_to_sign: string_to_sign
     } do
-      MockSetup.sign_via_api(error: :network)
-      assert {:error, message} = MUT.sign_via_api(string_to_sign, oauth_config)
+      MockSetup.sign(error: :network)
+      assert {:error, message} = MUT.sign(string_to_sign, oauth_config)
       assert message =~ ~r/Error during HTTP request:/
     end
 
@@ -77,8 +70,8 @@ defmodule GcsSignedUrl.CryptoTest do
       oauth_config: oauth_config,
       string_to_sign: string_to_sign
     } do
-      MockSetup.sign_via_api(error: :unexpected)
-      assert {:error, message} = MUT.sign_via_api(string_to_sign, oauth_config)
+      MockSetup.sign(error: :unexpected)
+      assert {:error, message} = MUT.sign(string_to_sign, oauth_config)
       assert message =~ ~r/unexpected error/
     end
   end

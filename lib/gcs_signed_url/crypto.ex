@@ -8,40 +8,17 @@ defmodule GcsSignedUrl.Crypto do
   @sign_blob_http Application.get_env(:gcs_signed_url, GcsSignedUrl.SignBlob.HTTP)
 
   @doc """
-  Signs the given string with the given client's private key and encodes the resulting signature as lowercase hex
-  string.
+  Signs the given string with the given client's private key
 
   ## Examples
 
       iex> GcsSignedUrl.Crypto.sign32("foo", %GcsSignedUrl.Client{private_key: "-----BEGIN RSA PRIVATE KEY-----..."})
       "1fad6186e41f577a37f56589..."
   """
-  @spec sign16(String.t(), Client.t()) :: String.t()
-  def sign16(string_to_sign, client) do
+  @spec sign(String.t(), Client.t()) :: String.t()
+  def sign(string_to_sign, %Client{} = client) do
     private_key = Client.get_decoded_private_key(client)
-
-    string_to_sign
-    |> :public_key.sign(:sha256, private_key, rsa_padding: :rsa_pkcs1_padding)
-    |> Base.encode16()
-    |> String.downcase()
-  end
-
-  @doc """
-  Signs the given string with the given client's private key and encodes the resulting signature as lowercase base64
-  string.
-
-  ## Examples
-
-      iex> GcsSignedUrl.Crypto.sign64("foo", %GcsSignedUrl.Client{private_key: "-----BEGIN RSA PRIVATE KEY-----..."})
-      "1fad6186e41f577a37f56589..."
-  """
-  @spec sign64(String.t(), Client.t()) :: String.t()
-  def sign64(string_to_sign, client) do
-    private_key = Client.get_decoded_private_key(client)
-
-    string_to_sign
-    |> :public_key.sign(:sha256, private_key, rsa_padding: :rsa_pkcs1_padding)
-    |> Base.encode64()
+    :public_key.sign(string_to_sign, :sha256, private_key, rsa_padding: :rsa_pkcs1_padding)
   end
 
   @doc """
@@ -53,14 +30,14 @@ defmodule GcsSignedUrl.Crypto do
       iex> GcsSignedUrl.Crypto.sign_via_api("foo", %GcsSignedUrl.OAuthConfig{access_token: "..."})
       {:ok, "1fad6186e41f577a37f56589..."}
   """
-  @spec sign_via_api(String.t(), SignBlob.OAuthConfig.t()) :: String.t()
-  def sign_via_api(string_to_sign, %SignBlob.OAuthConfig{
+  @spec sign(String.t(), SignBlob.OAuthConfig.t()) :: String.t()
+  def sign(string_to_sign, %SignBlob.OAuthConfig{
         service_account: service_account,
         access_token: access_token
       }) do
     payload = Base.encode64(string_to_sign)
 
-    with %HTTPoison.Response{body: raw_body} <-
+    with {:ok, %HTTPoison.Response{body: raw_body}} <-
            @sign_blob_http.post(
              service_account,
              %{payload: payload},
@@ -84,7 +61,7 @@ defmodule GcsSignedUrl.Crypto do
       %HTTPoison.Error{reason: reason} ->
         {:error, "Error during HTTP request: #{reason}"}
 
-      _ ->
+      _error ->
         {:error, "An unexpected error occurred during the API call to the signBlob API."}
     end
   end

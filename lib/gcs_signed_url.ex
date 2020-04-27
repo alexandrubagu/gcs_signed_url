@@ -3,10 +3,7 @@ defmodule GcsSignedUrl do
   Create Signed URLs for Google Cloud Storage in Elixir
   """
 
-  alias GcsSignedUrl.{CanonicalRequest, Crypto, Headers, ISODateTime, QueryString, StringToSign}
-
-  @host "storage.googleapis.com"
-  @base_url "https://#{@host}"
+  alias GcsSignedUrl.{Client, Crypto, SignBlob, StringToSign}
 
   @type sign_v2_opts :: [
           verb: String.t(),
@@ -24,7 +21,7 @@ defmodule GcsSignedUrl do
         ]
 
   @doc """
-  Generate signed url.
+  Generate V2 signed url.
 
   ## Examples
 
@@ -34,38 +31,21 @@ defmodule GcsSignedUrl do
 
   """
   @spec generate(
-          GcsSignedUrl.Client.t(),
+          Client.t(),
           String.t(),
           String.t(),
           sign_v2_opts
         ) :: String.t()
-  def generate(client, bucket, filename, opts \\ []) do
-    verb = Keyword.get(opts, :verb, "GET")
-    md5_digest = Keyword.get(opts, :md5_digest, "")
-    content_type = Keyword.get(opts, :content_type, "")
-    expires = Keyword.get(opts, :expires, hours_after(1))
-    resource = "/#{bucket}/#{filename}"
+  def generate(%Client{client_email: client_email} = client, bucket, filename, opts \\ []) do
+    %StringToSign{string_to_sign: string_to_sign, url_template: url_template} =
+      StringToSign.generate_v2(client_email, bucket, filename, opts)
 
-    signature =
-      [verb, md5_digest, content_type, expires, resource]
-      |> Enum.join("\n")
-      |> Crypto.sign64(client)
-
-    url = "#{@base_url}#{resource}"
-
-    query_string =
-      %{
-        "GoogleAccessId" => client.client_email,
-        "Expires" => expires,
-        "Signature" => signature
-      }
-      |> URI.encode_query()
-
-    Enum.join([url, "?", query_string])
+    signature = Crypto.sign(string_to_sign, client) |> Base.encode64()
+    String.replace(url_template, "#SIGNATURE#", signature)
   end
 
   @doc """
-  Generate signed url.
+  Generate V4 signed url using a locally present private key of a Google service account.
 
   ## Examples
 
@@ -74,41 +54,52 @@ defmodule GcsSignedUrl do
       "https://storage.googleapis.com/my-bucket/my-object.mp4?X-Goog-Expires=1800..."
 
   """
-  @spec generate_v4(
-          GcsSignedUrl.Client.t(),
-          String.t(),
-          String.t(),
-          sign_v4_opts
-        ) :: String.t()
-  def generate_v4(client, bucket, filename, opts \\ []) do
-    expires = Keyword.get(opts, :expires, 15 * 60)
-    verb = Keyword.get(opts, :verb, "GET")
-    additional_headers = Keyword.get(opts, :headers, [])
-    additional_query_params = Keyword.get(opts, :query_params, [])
-    valid_from = Keyword.get(opts, :valid_from, DateTime.utc_now())
+  @spec generate_v4(Client.t(), String.t(), String.t()) :: String.t()
+  @spec generate_v4(Client.t(), String.t(), String.t(), sign_v4_opts) :: String.t()
+  def generate_v4(client, bucket, filename, opts \\ [])
 
-    resource = "/#{bucket}/#{filename}"
-    iso_date_time = ISODateTime.generate(valid_from)
-    credential_scope = "#{iso_date_time.date}/auto/storage/goog4_request"
+  def generate_v4(%Client{client_email: client_email} = client, bucket, filename, opts) do
+    %StringToSign{string_to_sign: string_to_sign, url_template: url_template} =
+      StringToSign.generate_v4(client_email, bucket, filename, opts)
 
-    headers = Headers.create([host: @host] ++ additional_headers)
+    signature = Crypto.sign(string_to_sign, client) |> Base.encode16() |> String.downcase()
+    String.replace(url_template, "#SIGNATURE#", signature)
+  end
 
-    query_string =
-      QueryString.create(
-        client,
-        credential_scope,
-        iso_date_time,
-        headers,
-        expires,
-        additional_query_params
-      )
+  @doc """
+  Generate V4 signed url using the Google IAM REST API with a OAuth2 token of a service account.
 
-    canonical_request = CanonicalRequest.create(verb, resource, query_string, headers)
+  ## Examples
 
-    string_to_sign = StringToSign.create(iso_date_time, credential_scope, canonical_request)
-    signature = Crypto.sign16(string_to_sign, client)
+      iex> oauth_config = %GcsSignedUrl.SignBlob.OAuthConfig{service_account: "...", access_token: "..."}
+      iex> GcsSignedUrl.generate(oauth_config, "my-bucket", "my-object.mp4", verb: "PUT", expires: 1800, headers: ["Content-Type": "application/json"])
+      {:ok, "https://storage.googleapis.com/my-bucket/my-object.mp4?X-Goog-Expires=1800..."}
 
-    "https://#{@host}#{resource}?#{query_string}&X-Goog-Signature=#{signature}"
+  """
+  @spec generate_v4(SignBlob.OAuthConfig.t(), String.t(), String.t()) ::
+          {:ok, String.t()} | {:error, String.t()}
+  @spec generate_v4(SignBlob.OAuthConfig.t(), String.t(), String.t(), sign_v4_opts) ::
+          {:ok, String.t()} | {:error, String.t()}
+  def generate_v4(
+        %SignBlob.OAuthConfig{service_account: service_account} = oauth_config,
+        bucket,
+        filename,
+        opts
+      ) do
+    %StringToSign{string_to_sign: string_to_sign, url_template: url_template} =
+      StringToSign.generate_v4(service_account, bucket, filename, opts)
+
+    case Crypto.sign(string_to_sign, oauth_config) do
+      {:ok, signature} ->
+        signature
+        |> Base.decode64!()
+        |> Base.encode16()
+        |> String.downcase()
+        |> (&String.replace(url_template, "#SIGNATURE#", &1)).()
+
+      error ->
+        error
+    end
   end
 
   @doc """
