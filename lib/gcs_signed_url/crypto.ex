@@ -31,40 +31,41 @@ defmodule GcsSignedUrl.Crypto do
     :public_key.sign(string_to_sign, :sha256, private_key, rsa_padding: :rsa_pkcs1_padding)
   end
 
-  def sign(string_to_sign, %SignBlob.OAuthConfig{
-        service_account: service_account,
-        access_token: access_token
-      }) do
-    payload = Base.encode64(string_to_sign)
-
-    with {:ok, %HTTPoison.Response{body: raw_body}} <-
-           @sign_blob_http.post(
-             service_account,
-             %{payload: payload},
-             Authorization: "Bearer #{access_token}"
-           ),
+  def sign(string_to_sign, oauth_config) do
+    with {:ok, %{body: raw_body}} <- do_post_request(string_to_sign, oauth_config),
          {:ok, body} <- Jason.decode(raw_body),
-         %{"signedBlob" => signature} <- body do
+         %{"signedBlob" => signature} <- body
+      do
       {:ok, signature}
     else
-      %{"error" => %{"code" => 401, "message" => message}} ->
-        {:error,
-         "401 UNAUTHENTICATED: #{message} Make sure the access_token is valid and did not expire."}
-
-      %{"error" => %{"code" => 403, "message" => message}} ->
-        {:error,
-         "403 PERMISSION_DENIED: #{message} Make sure the authorized SA has role roles/iam.serviceAccountTokenCreator on the SA passed in the URL."}
-
-      %{"error" => %{"code" => code, "message" => message, "status" => status}} ->
-        {:error, "#{code} #{status}: #{message}"}
-
-      %HTTPoison.Error{reason: reason} ->
-        {:error, "Error during HTTP request: #{reason}"}
-
-      _error ->
-        {:error, "An unexpected error occurred during the API call to the signBlob API."}
+        error -> format_error(error)
     end
   end
+
+  defp do_post_request(string_to_sign, oauth_config) do
+    payload = Base.encode64(string_to_sign)
+
+    @sign_blob_http.post(
+      oauth_config.service_account,
+      %{payload: payload},
+      Authorization: "Bearer #{oauth_config.access_token}"
+    )
+  end
+
+  defp format_error(%{"error" => %{"code" => 401, "message" => message}}),
+    do:
+      {:error,
+       "401 UNAUTHENTICATED: #{message} Make sure the access_token is valid and did not expire."}
+  defp format_error(%{"error" => %{"code" => 403, "message" => message}}),
+    do:
+      {:error,
+       "403 PERMISSION_DENIED: #{message} Make sure the authorized SA has role roles/iam.serviceAccountTokenCreator on the SA passed in the URL."}
+  defp format_error(%{"error" => %{"code" => code, "message" => message, "status" => status}}),
+    do: {:error, "#{code} #{status}: #{message}"}
+  defp format_error(%{reason: reason}),
+       do: {:error, "Error during HTTP request: #{reason}"}
+  defp format_error(_error),
+       do: {:error, "An unexpected error occurred during the API call to the signBlob API."}
 
   @doc """
   Hashed the given string using sha256 algorithm and encode it as lowercase hex string.
