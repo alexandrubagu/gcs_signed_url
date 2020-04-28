@@ -49,7 +49,7 @@ defmodule GcsSignedUrl.Headers do
 
   defp group_concat(list) do
     list
-    |> Enum.group_by(&elem(&1, 0), &(&1 |> elem(1)))
+    |> Enum.group_by(&elem(&1, 0), &elem(&1, 1))
     |> Enum.map(fn {k, v} -> {k, Enum.join(v, ",")} end)
   end
 end
