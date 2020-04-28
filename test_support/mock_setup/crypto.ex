@@ -31,7 +31,7 @@ defmodule GcsSignedUrl.MockSetup.Crypto do
       :post,
       fn (_service_account, _body, _headers) ->
         case error do
-          nil -> {:ok, %HTTPoison.Response{status_code: 200, body: "{\"keyId\": \"some_key\", \"signedBlob\": \"signature\"}"}}
+          nil -> {:ok, %HTTPoison.Response{status_code: 200, body: "{\"keyId\": \"some_key\", \"signedBlob\": \"c2lnbmF0dXJlCg==\"}"}}
           :unauthenticated -> create_fake_error_response(401, "Some Message", "UNAUTHENTICATED")
           :permission_denied -> create_fake_error_response(403, "Some Message", "PERMISSION_DEINED")
           :other_api_error -> create_fake_error_response(404, "Some Message", "SOME_STATUS")

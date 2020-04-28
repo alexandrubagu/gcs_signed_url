@@ -8,29 +8,29 @@ defmodule GcsSignedUrl.Crypto do
   @sign_blob_http Application.get_env(:gcs_signed_url, GcsSignedUrl.SignBlob.HTTP)
 
   @doc """
-  Signs the given string with the given client's private key
+  If you pass a `%GcsSignedUrl.Client{}` as second argument, this function signs the given string with the given
+  client's private key.
+
+  If you pass a `%GcsSignedUrl.SignBlob.OAuthConfig{}` as second argument, this function signs the given string using
+  the signBlob REST API.
+
+  (see https://cloud.google.com/iam/docs/reference/rest/v1/projects.serviceAccounts/signBlob)
 
   ## Examples
 
-      iex> GcsSignedUrl.Crypto.sign32("foo", %GcsSignedUrl.Client{private_key: "-----BEGIN RSA PRIVATE KEY-----..."})
-      "1fad6186e41f577a37f56589..."
+      iex> GcsSignedUrl.Crypto.sign("foo", %GcsSignedUrl.Client{private_key: "-----BEGIN RSA PRIVATE KEY-----..."})
+      "..."
+
+      iex> GcsSignedUrl.Crypto.sign("foo", %GcsSignedUrl.SignBlob.OAuthConfig{access_token: "..."})
+      {:ok, "1fad6186e41f577a37f56589..."}
   """
   @spec sign(String.t(), Client.t()) :: String.t()
+  @spec sign(String.t(), SignBlob.OAuthConfig.t()) :: String.t()
   def sign(string_to_sign, %Client{} = client) do
     private_key = Client.get_decoded_private_key(client)
     :public_key.sign(string_to_sign, :sha256, private_key, rsa_padding: :rsa_pkcs1_padding)
   end
 
-  @doc """
-  Signs the given string via the signBlob REST API
-  (see https://cloud.google.com/iam/docs/reference/rest/v1/projects.serviceAccounts/signBlob)
-
-  ## Examples
-
-      iex> GcsSignedUrl.Crypto.sign_via_api("foo", %GcsSignedUrl.OAuthConfig{access_token: "..."})
-      {:ok, "1fad6186e41f577a37f56589..."}
-  """
-  @spec sign(String.t(), SignBlob.OAuthConfig.t()) :: String.t()
   def sign(string_to_sign, %SignBlob.OAuthConfig{
         service_account: service_account,
         access_token: access_token

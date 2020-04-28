@@ -28,7 +28,7 @@ defmodule GcsSignedUrl.CryptoTest do
       string_to_sign: string_to_sign
     } do
       MockSetup.sign()
-      assert {:ok, "signature"} == MUT.sign(string_to_sign, oauth_config)
+      assert {:ok, "c2lnbmF0dXJlCg=="} == MUT.sign(string_to_sign, oauth_config)
     end
 
     test "returns error with details upon 401 response from API", %{
