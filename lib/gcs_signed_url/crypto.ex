@@ -52,6 +52,7 @@ defmodule GcsSignedUrl.Crypto do
     )
   end
 
+  # coveralls-ignore-start, reason: no logic worth testing.
   defp format_error(%{"error" => %{"code" => 401, "message" => message}}),
     do:
       {:error,
@@ -66,6 +67,7 @@ defmodule GcsSignedUrl.Crypto do
        do: {:error, "Error during HTTP request: #{reason}"}
   defp format_error(_error),
        do: {:error, "An unexpected error occurred during the API call to the signBlob API."}
+  # coveralls-ignore-stop
 
   @doc """
   Hashed the given string using sha256 algorithm and encode it as lowercase hex string.

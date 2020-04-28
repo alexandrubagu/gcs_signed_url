@@ -31,30 +31,13 @@ defmodule GcsSignedUrl.CryptoTest do
       assert {:ok, "c2lnbmF0dXJlCg=="} == MUT.sign(string_to_sign, oauth_config)
     end
 
-    test "returns error with details upon 401 response from API", %{
+    test "returns error with details upon non-200 response from API", %{
       oauth_config: oauth_config,
       string_to_sign: string_to_sign
     } do
       MockSetup.sign(error: :unauthenticated)
       assert {:error, message} = MUT.sign(string_to_sign, oauth_config)
       assert message =~ ~r/Make sure the access_token/
-    end
-
-    test "returns error with details upon 403 response from API", %{
-      oauth_config: oauth_config,
-      string_to_sign: string_to_sign
-    } do
-      MockSetup.sign(error: :permission_denied)
-      assert {:error, message} = MUT.sign(string_to_sign, oauth_config)
-      assert message =~ ~r/Make sure the authorized SA/
-    end
-
-    test "returns error with details upon response from API other than the above", %{
-      oauth_config: oauth_config,
-      string_to_sign: string_to_sign
-    } do
-      MockSetup.sign(error: :other_api_error)
-      assert {:error, _message} = MUT.sign(string_to_sign, oauth_config)
     end
 
     test "returns error with details if there's network problems", %{
