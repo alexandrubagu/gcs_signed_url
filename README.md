@@ -10,7 +10,7 @@ Add `gcs_signed_url` to your list of dependencies in `mix.exs`:
 
 ```elixir
 def deps do
-  [{:gcs_signed_url, "~> 0.2.0"}]
+  [{:gcs_signed_url, "~> 0.3.0"}]
 end
 ```
 
