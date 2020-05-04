@@ -5,7 +5,7 @@ defmodule GcsSignedUrl.Crypto do
 
   alias GcsSignedUrl.{Client, SignBlob}
 
-  @sign_blob_http Application.get_env(:gcs_signed_url, GcsSignedUrl.SignBlob.HTTP)
+  @sign_blob_http Application.get_env(:gcs_signed_url, GcsSignedUrl.SignBlob.HTTP, GcsSignedUrl.SignBlob.HTTP)
 
   @doc """
   If you pass a `%GcsSignedUrl.Client{}` as second argument, this function signs the given string with the given
