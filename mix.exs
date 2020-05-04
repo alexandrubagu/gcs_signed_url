@@ -15,6 +15,10 @@ defmodule GcsSignedUrl.MixProject do
         plt_add_deps: :transitive,
         plt_add_apps: [:mix, :public_key],
         flags: [:race_conditions, :no_opaque]
+      ],
+      docs: [
+        main: "readme",
+        extras: ["README.md"]
       ]
     ]
   end

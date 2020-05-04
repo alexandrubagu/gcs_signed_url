@@ -33,12 +33,12 @@ scenario, you run your application under a Kubernetes service account (KSA) whic
 [Goth](https://github.com/peburrows/goth), you would get an OAuth2 access token and use it to create a signed URL
 through the SignBlob API.
 
-In this scenario, the GSA you get the access token for (GSA_AUTH) acts as a Google Service Account GSA_SIGNER and
+In this scenario, the GSA you get the access token for (`GSA_AUTH`) acts as a Google Service Account `GSA_SIGNER` and
 signs the URL on his behalf. This requires the `GSA_AUTH` go have the Google IAM permission
 **iam.serviceAccounts.signBlob** on the `GSA_SIGNER`, e.g. by giving it the built in
 role **roles/iam.serviceAccountTokenCreator** on `GSA_SIGNER`.
 
-GSA_AUTH and GSA_SIGNER can also be the same service account in which case he needs to have the permission
+`GSA_AUTH` and `GSA_SIGNER` can also be the same service account in which case he needs to have the permission
 **iam.serviceAccounts.signBlob** on itself.
 
 #### Example
