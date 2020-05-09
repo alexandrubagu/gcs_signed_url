@@ -5,7 +5,11 @@ defmodule GcsSignedUrl.Crypto do
 
   alias GcsSignedUrl.{Client, SignBlob}
 
-  @sign_blob_http Application.get_env(:gcs_signed_url, GcsSignedUrl.SignBlob.HTTP, GcsSignedUrl.SignBlob.HTTP)
+  @sign_blob_http Application.get_env(
+                    :gcs_signed_url,
+                    GcsSignedUrl.SignBlob.HTTP,
+                    GcsSignedUrl.SignBlob.HTTP
+                  )
 
   @doc """
   If you pass a `%GcsSignedUrl.Client{}` as second argument, this function signs the given string with the given
@@ -34,11 +38,10 @@ defmodule GcsSignedUrl.Crypto do
   def sign(string_to_sign, oauth_config) do
     with {:ok, %{body: raw_body}} <- do_post_request(string_to_sign, oauth_config),
          {:ok, body} <- Jason.decode(raw_body),
-         %{"signedBlob" => signature} <- body
-      do
+         %{"signedBlob" => signature} <- body do
       {:ok, signature}
     else
-        error -> format_error(error)
+      error -> format_error(error)
     end
   end
 
@@ -57,16 +60,21 @@ defmodule GcsSignedUrl.Crypto do
     do:
       {:error,
        "401 UNAUTHENTICATED: #{message} Make sure the access_token is valid and did not expire."}
+
   defp format_error(%{"error" => %{"code" => 403, "message" => message}}),
     do:
       {:error,
        "403 PERMISSION_DENIED: #{message} Make sure the authorized SA has role roles/iam.serviceAccountTokenCreator on the SA passed in the URL."}
+
   defp format_error(%{"error" => %{"code" => code, "message" => message, "status" => status}}),
     do: {:error, "#{code} #{status}: #{message}"}
+
   defp format_error(%{reason: reason}),
-       do: {:error, "Error during HTTP request: #{reason}"}
+    do: {:error, "Error during HTTP request: #{reason}"}
+
   defp format_error(_error),
-       do: {:error, "An unexpected error occurred during the API call to the signBlob API."}
+    do: {:error, "An unexpected error occurred during the API call to the signBlob API."}
+
   # coveralls-ignore-stop
 
   @doc """
