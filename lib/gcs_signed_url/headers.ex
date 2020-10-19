@@ -38,9 +38,7 @@ defmodule GcsSignedUrl.Headers do
   end
 
   defp create_signed_headers(headers) do
-    headers
-    |> Keyword.keys()
-    |> Enum.join(";")
+    Enum.map_join(headers, ";", &elem(&1, 0))
   end
 
   defp create_canonical_headers(headers) do
