@@ -28,7 +28,7 @@ defmodule GcsSignedUrl.Client do
       %GcsSignedUrl.Client{...}
 
   """
-  @spec load(map()) :: __MODULE__.t()
+  @spec load(map() | String.t()) :: __MODULE__.t()
   def load(%{
         "private_key" => private_key,
         "client_email" => client_email
@@ -39,7 +39,6 @@ defmodule GcsSignedUrl.Client do
     }
   end
 
-  @spec load(String.t()) :: __MODULE__.t()
   def load(path), do: load_from_file(path)
 
   @doc """
