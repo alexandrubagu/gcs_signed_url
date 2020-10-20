@@ -1,6 +1,5 @@
 # gcs_signed_url - Create Signed URLs for Google Cloud Storage
-
-[![Travis](https://travis-ci.org/alexandrubagu/gcs_signed_url.svg)](https://travis-ci.org/alexandrubagu/gcs_signed_url)
+[![Build Status](https://github.com/alexandrubagu/gcs_signed_url/workflows/CI/badge.svg)](https://github.com/alexandrubagu/gcs_signed_url/actions?query=workflow%3ACI)
 [![Hex.pm](https://img.shields.io/hexpm/v/gcs_signed_url.svg?maxAge=2592000)](https://hex.pm/packages/gcs_signed_url)
 [![Hex.pm](https://img.shields.io/hexpm/dt/gcs_signed_url.svg?maxAge=2592000)](https://hex.pm/packages/gcs_signed_url)
 [![Hex.pm](https://img.shields.io/hexpm/l/gcs_signed_url.svg?maxAge=2592000)](https://hex.pm/packages/gcs_signed_url)
