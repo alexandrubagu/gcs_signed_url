@@ -15,11 +15,7 @@ defmodule GcsSignedUrl.MixProject do
       start_permanent: Mix.env() == :prod,
       deps: deps(),
       test_coverage: [tool: ExCoveralls],
-      dialyzer: [
-        plt_add_deps: :transitive,
-        plt_add_apps: [:mix, :public_key],
-        flags: [:race_conditions, :no_opaque]
-      ],
+      dialyzer: dialyzer(),
       docs: [
         main: "readme",
         extras: ["README.md"],
@@ -50,7 +46,7 @@ defmodule GcsSignedUrl.MixProject do
   defp deps do
     [
       {:credo, "~> 1.5-pre", only: [:dev, :test], runtime: false},
-      {:dialyxir, "~> 0.5", only: [:dev], runtime: false},
+      {:dialyxir, "~> 1.0", only: [:dev, :test], runtime: false},
       {:ex_doc, "~> 0.21", only: :dev, runtime: false},
       {:excoveralls, "~> 0.13", only: :test},
       {:mox, "~> 0.5", only: :test},
@@ -59,6 +55,17 @@ defmodule GcsSignedUrl.MixProject do
     ]
   end
 
+  defp dialyzer do
+    [
+      flags: [:race_conditions, :no_opaque],
+      plt_add_deps: :transitive,
+      plt_add_apps: [:mix, :public_key],
+      plt_core_path: "priv/plts",
+      plt_file: {:no_warn, "priv/plts/gcs_signed_url.plt"}
+    ]
+  end
+
+  # Specifies which paths to compile per environment.
   defp elixirc_paths(:test), do: ["lib", "test_support"]
   defp elixirc_paths(_), do: ["lib"]
 
