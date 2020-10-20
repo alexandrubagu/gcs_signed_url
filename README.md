@@ -1,10 +1,16 @@
 # gcs_signed_url - Create Signed URLs for Google Cloud Storage
-[![Travis](https://travis-ci.org/alexandrubagu/gcs_signed_url.svg)](https://travis-ci.org/alexandrubagu/gcs_signed_url) [![Hex.pm](https://img.shields.io/hexpm/v/gcs_signed_url.svg?maxAge=2592000)](https://hex.pm/packages/gcs_signed_url) [![Hex.pm](https://img.shields.io/hexpm/dt/gcs_signed_url.svg?maxAge=2592000)](https://hex.pm/packages/gcs_signed_url) [![Hex.pm](https://img.shields.io/hexpm/l/gcs_signed_url.svg?maxAge=2592000)](https://hex.pm/packages/gcs_signed_url) [![Coverage Status](https://coveralls.io/repos/github/alexandrubagu/gcs_signed_url/badge.svg?branch=master)](https://coveralls.io/github/alexandrubagu/gcs_signed_url?branch=master)
+
+[![Travis](https://travis-ci.org/alexandrubagu/gcs_signed_url.svg)](https://travis-ci.org/alexandrubagu/gcs_signed_url)
+[![Hex.pm](https://img.shields.io/hexpm/v/gcs_signed_url.svg?maxAge=2592000)](https://hex.pm/packages/gcs_signed_url)
+[![Hex.pm](https://img.shields.io/hexpm/dt/gcs_signed_url.svg?maxAge=2592000)](https://hex.pm/packages/gcs_signed_url)
+[![Hex.pm](https://img.shields.io/hexpm/l/gcs_signed_url.svg?maxAge=2592000)](https://hex.pm/packages/gcs_signed_url)
+[![Coverage Status](https://coveralls.io/repos/github/alexandrubagu/gcs_signed_url/badge.svg?branch=master)](https://coveralls.io/github/alexandrubagu/gcs_signed_url?branch=master)
 
 ## Important
-This package works with elixir >= 1.8 and otp >= 22.3
 
-## Hex Installation 
+This package works with Elixir >= 1.8 and Erlang/OTP >= 22.3
+
+## Hex Installation
 
 Add `gcs_signed_url` to your list of dependencies in `mix.exs`:
 
@@ -44,10 +50,10 @@ role **roles/iam.serviceAccountTokenCreator** on `GSA_SIGNER`.
 #### Example
 
 ```elixir
-    iex> access_token = Goth.Token.for_scope("https://www.googleapis.com")
-    iex> oauth_config = %GcsSignedUrl.SignBlob.OAuthConfig{service_account: "project@gcs_signed_url.iam.gserviceaccount.com", access_token: access_token}
-    iex> GcsSignedUrl.generate_v4(oauth_config, "my-bucket", "my-object.jpg", verb: "PUT", expires: 1800, headers: ["Content-Type": "application/jpeg"])
-    {:ok, "https://storage.googleapis.com/my-bucket/my-object.jpg?X-Goog-Expires=1800..."}
+iex> access_token = Goth.Token.for_scope("https://www.googleapis.com")
+iex> oauth_config = %GcsSignedUrl.SignBlob.OAuthConfig{service_account: "project@gcs_signed_url.iam.gserviceaccount.com", access_token: access_token}
+iex> GcsSignedUrl.generate_v4(oauth_config, "my-bucket", "my-object.jpg", verb: "PUT", expires: 1800, headers: ["Content-Type": "application/jpeg"])
+{:ok, "https://storage.googleapis.com/my-bucket/my-object.jpg?X-Goog-Expires=1800..."}
 ```
 
 ### On-Premise Signing
@@ -55,19 +61,20 @@ role **roles/iam.serviceAccountTokenCreator** on `GSA_SIGNER`.
 In this scenario you have a service account key in form of a JSON file on your machine. The library will use the
 private key to create the signature, no network calls are needed.
 
-1. Load the client
-```elixir
-iex> GcsSignedUrl.Client.load_from_file("/home/alexandrubagu/config/google.json")
-```
-or 
+1.  Load the client
+    ```elixir
+    iex> GcsSignedUrl.Client.load_from_file("/home/alexandrubagu/config/google.json")
+    ```
 
-```elixir
-iex> service_account = service_account_json_string |> Jason.decode!
-iex> GcsSignedUrl.Client.load(service_account)
-```
- 
- 2. Generate signed url (V2)
- ```elixir
- GcsSignedUrl.generate(client, "my-bucket", "my-object.mp4")
- GcsSignedUrl.generate(client, "my-bucket", "my-object.mp4", expires: GcsSignedUrl.hours_after(3))
- ```
+    or
+
+    ```elixir
+    iex> service_account = service_account_json_string |> Jason.decode!
+    iex> GcsSignedUrl.Client.load(service_account)
+    ```
+
+2.  Generate signed url (V2)
+    ```elixir
+    GcsSignedUrl.generate(client, "my-bucket", "my-object.mp4")
+    GcsSignedUrl.generate(client, "my-bucket", "my-object.mp4", expires: GcsSignedUrl.hours_after(3))
+    ```

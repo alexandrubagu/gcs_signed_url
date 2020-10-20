@@ -1,7 +1,5 @@
 defmodule GcsSignedUrl.SignBlob.HTTP do
   @moduledoc """
-
-
   https://cloud.google.com/iam/docs/reference/credentials/rest/v1/projects.serviceAccounts/signBlob
   """
 
