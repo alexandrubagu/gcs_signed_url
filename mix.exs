@@ -1,10 +1,13 @@
 defmodule GcsSignedUrl.MixProject do
   use Mix.Project
 
+  @source_url "https://github.com/alexandrubagu/gcs_signed_url"
+  @version "0.4.1"
+
   def project do
     [
       app: :gcs_signed_url,
-      version: "0.4.1",
+      version: @version,
       elixir: "~> 1.8",
       elixirc_paths: elixirc_paths(Mix.env()),
       package: package(),
@@ -18,19 +21,19 @@ defmodule GcsSignedUrl.MixProject do
       ],
       docs: [
         main: "readme",
-        extras: ["README.md"]
+        extras: ["README.md"],
+        source_ref: "v#{@version}",
+        source_url: @source_url
       ]
     ]
   end
 
-  # Run "mix help compile.app" to learn about applications.
   def application do
     [
       extra_applications: [:logger]
     ]
   end
 
-  # Run "mix help deps" to learn about dependencies.
   defp deps do
     [
       {:credo, "~> 1.5-pre", only: [:dev, :test], runtime: false},
@@ -43,7 +46,6 @@ defmodule GcsSignedUrl.MixProject do
     ]
   end
 
-  # Specifies which paths to compile per environment.
   defp elixirc_paths(:test), do: ["lib", "test_support"]
   defp elixirc_paths(_), do: ["lib"]
 
@@ -55,8 +57,7 @@ defmodule GcsSignedUrl.MixProject do
       maintainers: ["Bagu Alexandru Bogdan"],
       licenses: ["Apache 2.0"],
       links: %{
-        "GitHub" => "https://github.com/alexandrubagu/gcs_signed_url",
-        "Docs" => "https://github.com/alexandrubagu/gcs_signed_url",
+        "GitHub" => @source_url,
         "Website" => "http://www.alexandrubagu.info"
       }
     ]

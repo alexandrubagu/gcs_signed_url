@@ -4,7 +4,7 @@ defmodule GcsSignedUrl.QueryString do
   """
 
   @doc """
-    Adds required query parameters for signed URL, sorts them and encodes them as proper query string.
+  Adds required query parameters for signed URL, sorts them and encodes them as proper query string.
   """
   @spec create(
           String.t(),

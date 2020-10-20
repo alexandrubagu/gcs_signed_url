@@ -36,6 +36,7 @@ defmodule GcsSignedUrl do
       iex> oauth_config = %GcsSignedUrl.SignBlob.OAuthConfig{service_account: "...", access_token: "..."}
       iex> GcsSignedUrl.generate(oauth_config, "my-bucket", "my-object.mp4", expires: 1503599316)
       {:ok, "https://storage.googleapis.com/my-bucket/my-object.mp4?X-Goog-Expires=1800..."}
+
   """
   @spec generate(Client.t(), String.t(), String.t()) :: String.t()
   @spec generate(Client.t(), String.t(), String.t(), sign_v2_opts) :: String.t()
@@ -87,6 +88,7 @@ defmodule GcsSignedUrl do
       iex> oauth_config = %GcsSignedUrl.SignBlob.OAuthConfig{service_account: "...", access_token: "..."}
       iex> GcsSignedUrl.generate_v4(oauth_config, "my-bucket", "my-object.mp4", verb: "PUT", expires: 1800, headers: ["Content-Type": "application/json"])
       {:ok, "https://storage.googleapis.com/my-bucket/my-object.mp4?X-Goog-Expires=1800..."}
+
   """
   @spec generate_v4(Client.t(), String.t(), String.t()) :: String.t()
   @spec generate_v4(Client.t(), String.t(), String.t(), sign_v4_opts) :: String.t()
