@@ -79,7 +79,7 @@ defmodule GcsSignedUrl.StringToSign do
           String.t(),
           String.t(),
           GcsSignedUrl.sign_v2_opts()
-        ) :: String.t()
+        ) :: __MODULE__.t()
   def generate_v2(client_email, bucket, filename, opts \\ []) do
     verb = Keyword.get(opts, :verb, "GET")
     md5_digest = Keyword.get(opts, :md5_digest, "")

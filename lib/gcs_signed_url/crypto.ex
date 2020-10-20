@@ -23,7 +23,7 @@ defmodule GcsSignedUrl.Crypto do
       {:ok, "1fad6186e41f577a37f56589..."}
   """
   @spec sign(String.t(), Client.t()) :: String.t()
-  @spec sign(String.t(), SignBlob.OAuthConfig.t()) :: String.t()
+  @spec sign(String.t(), SignBlob.OAuthConfig.t()) :: {:ok, String.t()} | {:error, String.t()}
   def sign(string_to_sign, %Client{} = client) do
     private_key = Client.get_decoded_private_key(client)
     :public_key.sign(string_to_sign, :sha256, private_key, rsa_padding: :rsa_pkcs1_padding)

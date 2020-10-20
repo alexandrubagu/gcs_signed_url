@@ -9,12 +9,10 @@ defmodule GcsSignedUrl.SignBlob.HTTP do
 
   # coveralls-ignore-start, reason: no logic worth testing
 
-  @spec process_url(binary) :: binary
   def process_url(service_account) do
     @endpoint <> service_account <> ":signBlob"
   end
 
-  @spec process_request_body(term) :: binary
   def process_request_body(body) do
     Jason.encode!(body)
   end

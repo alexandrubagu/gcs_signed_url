@@ -9,3 +9,7 @@ erl_crash.dump
 /config/*.secret.exs
 /.elixir_ls
 /.idea
+
+# Ignore dialyzer files
+/priv/plts/*.plt
+/priv/plts/*.plt.hash
