@@ -36,5 +36,5 @@ defmodule GcsSignedUrl.ISODateTime do
     }
   end
 
-  def generate(), do: generate(DateTime.utc_now())
+  def generate, do: generate(DateTime.utc_now())
 end
