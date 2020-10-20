@@ -6,13 +6,11 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ## Unreleased
 
-## [0.4.2] - 2020-10-20
-
 ### Added
-- this changelog ;)
 
 ### Changed
 - Misc. Markdown format and module config changes for HTML doc generation
+- Github Workflows and Dependabot configuration
 
 ## [0.4.1] - 2020-10-20
 
