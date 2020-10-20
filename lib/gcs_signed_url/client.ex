@@ -16,7 +16,7 @@ defmodule GcsSignedUrl.Client do
   defstruct @fields
 
   @doc """
-  Initialize GcsSignedUrl.Client with given map.
+  Initialize GcsSignedUrl.Client with given map, or load a file if called with a path string.
 
   ## Examples
 
@@ -24,8 +24,11 @@ defmodule GcsSignedUrl.Client do
       iex> GcsSignedUrl.Client.load(service_account)
       %GcsSignedUrl.Client{...}
 
+      iex> GcsSignedUrl.Client.load("/home/alexandrubagu/config/google.json")
+      %GcsSignedUrl.Client{...}
+
   """
-  @spec load(map()) :: __MODULE__.t()
+  @spec load(map() | String.t()) :: __MODULE__.t()
   def load(%{
         "private_key" => private_key,
         "client_email" => client_email
@@ -36,10 +39,6 @@ defmodule GcsSignedUrl.Client do
     }
   end
 
-  @doc """
-  Same as load_from_file/1
-  """
-  @spec load(String.t()) :: __MODULE__.t()
   def load(path), do: load_from_file(path)
 
   @doc """
