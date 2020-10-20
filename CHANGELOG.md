@@ -6,8 +6,14 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ## Unreleased
 
+## [0.4.1] - 2020-10-20
+
+### Added
+- this changelog ;)
+
+### Changed
 - Better README.md and add README.md to hex docs
-- Add this changelog ;)
+- Changes regarding support for Elixir 1.11
 
 ## [0.4.0] - 2020-05-04
 
