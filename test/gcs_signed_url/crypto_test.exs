@@ -1,9 +1,9 @@
 defmodule GcsSignedUrl.CryptoTest do
   use ExUnit.Case
-  alias GcsSignedUrl.SignBlob
   alias GcsSignedUrl.Crypto, as: MUT
-  alias GcsSignedUrl.MockSetup.Crypto, as: MockSetup
   alias GcsSignedUrl.Fixtures.Crypto, as: Fixtures
+  alias GcsSignedUrl.MockSetup.Crypto, as: MockSetup
+  alias GcsSignedUrl.SignBlob
 
   describe "sign/2 with client" do
     test "returns the signature correctly" do

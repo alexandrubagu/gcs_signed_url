@@ -2,8 +2,8 @@ defmodule GcsSignedUrlTest do
   use ExUnit.Case
 
   alias GcsSignedUrl, as: MUT
-  alias GcsSignedUrl.SignBlob
   alias GcsSignedUrl.MockSetup.Crypto, as: CryptoMockSetup
+  alias GcsSignedUrl.SignBlob
 
   setup do
     [
