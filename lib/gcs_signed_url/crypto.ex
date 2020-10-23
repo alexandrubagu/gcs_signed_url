@@ -5,6 +5,12 @@ defmodule GcsSignedUrl.Crypto do
 
   alias GcsSignedUrl.{Client, SignBlob}
 
+  @sign_blob_http Application.compile_env(
+                    :gcs_signed_url,
+                    GcsSignedUrl.SignBlob.HTTP,
+                    GcsSignedUrl.SignBlob.HTTP
+                  )
+
   @doc """
   If you pass a `%GcsSignedUrl.Client{}` as second argument, this function signs the given string with the given
   client's private key.
@@ -42,14 +48,7 @@ defmodule GcsSignedUrl.Crypto do
   defp do_post_request(string_to_sign, oauth_config) do
     payload = Base.encode64(string_to_sign)
 
-    sign_blob_http =
-      Application.get_env(
-        :gcs_signed_url,
-        GcsSignedUrl.SignBlob.HTTP,
-        GcsSignedUrl.SignBlob.HTTP
-      )
-
-    sign_blob_http.post(
+    @sign_blob_http.post(
       oauth_config.service_account,
       %{payload: payload},
       Authorization: "Bearer #{oauth_config.access_token}"
