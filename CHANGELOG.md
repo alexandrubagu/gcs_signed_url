@@ -6,11 +6,14 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ## Unreleased
 
+## [0.4.2] - 2020-10-20
+
 ### Added
+- Github Workflows and Dependabot configuration
 
 ### Changed
+- URL encode the signature in V2 algorithm (#7, #16)
 - Misc. Markdown format and module config changes for HTML doc generation
-- Github Workflows and Dependabot configuration
 
 ## [0.4.1] - 2020-10-20
 
