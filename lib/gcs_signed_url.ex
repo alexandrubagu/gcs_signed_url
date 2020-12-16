@@ -50,7 +50,7 @@ defmodule GcsSignedUrl do
     %StringToSign{string_to_sign: string_to_sign, url_template: url_template} =
       StringToSign.generate_v2(client_email, bucket, filename, opts)
 
-    signature = Crypto.sign(string_to_sign, client) |> Base.encode64()
+    signature = Crypto.sign(string_to_sign, client) |> Base.encode64() |> URI.encode_www_form()
     String.replace(url_template, "#SIGNATURE#", signature)
   end
 
