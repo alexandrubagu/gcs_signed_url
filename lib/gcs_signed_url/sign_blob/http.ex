@@ -5,7 +5,7 @@ defmodule GcsSignedUrl.SignBlob.HTTP do
 
   use HTTPoison.Base
 
-  @endpoint "https://content-iamcredentials.googleapis.com/v1/projects/-/serviceAccounts/"
+  @endpoint "https://iamcredentials.googleapis.com/v1/projects/-/serviceAccounts/"
 
   # coveralls-ignore-start, reason: no logic worth testing
 
