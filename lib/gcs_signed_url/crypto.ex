@@ -18,7 +18,7 @@ defmodule GcsSignedUrl.Crypto do
   If you pass a `%GcsSignedUrl.SignBlob.OAuthConfig{}` as second argument, this function signs the given string using
   the signBlob REST API.
 
-  (see https://cloud.google.com/iam/docs/reference/rest/v1/projects.serviceAccounts/signBlob)
+  (see https://cloud.google.com/iam/docs/reference/credentials/rest/v1/projects.serviceAccounts/signBlob)
 
   ## Examples
 
