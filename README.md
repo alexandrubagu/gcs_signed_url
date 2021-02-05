@@ -49,7 +49,7 @@ role **roles/iam.serviceAccountTokenCreator** on `GSA_SIGNER`.
 #### Example
 
 ```elixir
-iex> access_token = Goth.Token.for_scope("https://www.googleapis.com")
+iex> {:ok, %{token: access_token}} = Goth.Token.for_scope("https://www.googleapis.com")
 iex> oauth_config = %GcsSignedUrl.SignBlob.OAuthConfig{service_account: "project@gcs_signed_url.iam.gserviceaccount.com", access_token: access_token}
 iex> GcsSignedUrl.generate_v4(oauth_config, "my-bucket", "my-object.jpg", verb: "PUT", expires: 1800, headers: ["Content-Type": "application/jpeg"])
 {:ok, "https://storage.googleapis.com/my-bucket/my-object.jpg?X-Goog-Expires=1800..."}
