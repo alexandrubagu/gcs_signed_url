@@ -8,6 +8,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ### Changed
 
+- Docs: use correct auth scope in README
 - Fix: Changed domain of Google API endpoint for signBlob from `content-iamcredentials.googleapis.com` to `iamcredentials.googleapis.com`
 - Chores: Bump httpoison from 1.7.0 to 1.8.0
 - Chores: Bump excoveralls from 0.13.3 to 0.13.4
