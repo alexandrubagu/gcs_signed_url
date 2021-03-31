@@ -25,12 +25,26 @@ jobs:
           elixir-version: ${{matrix.elixir}}
           experimental-otp: true
 
+      - name: Retrieve Build Cache
+        uses: actions/cache@v1
+        id: build-folder-cache
+        with:
+          path: _build
+          key: ${{ runner.os }}-${{ matrix.otp }}-${{ matrix.elixir }}-build-${{ hashFiles(format('{0}{1}', github.workspace, '/mix.lock')) }}
+
       - name: Retrieve Mix Dependencies Cache
         uses: actions/cache@v1
-        id: mix-cache
+        id: deps-cache
         with:
           path: deps
-          key: ${{runner.os}}-${{matrix.otp}}-${{matrix.elixir}}-mix-${{ hashFiles(format('{0}{1}', github.workspace, '/mix.lock')) }}
+          key: ${{runner.os}}-${{matrix.otp}}-${{matrix.elixir}}-deps-${{ hashFiles(format('{0}{1}', github.workspace, '/mix.lock')) }}
+
+      - name: Retrieve PLT Cache
+        uses: actions/cache@v1
+        id: plt-cache
+        with:
+          path: priv/plts
+          key: ${{ runner.os }}-${{ matrix.otp }}-${{ matrix.elixir }}-plts-v2-${{ hashFiles(format('{0}{1}', github.workspace, '/mix.lock')) }}
 
       - name: Install Mix Dependencies
         if: steps.mix-cache.outputs.cache-hit != 'true'
@@ -50,18 +64,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: mix coveralls.github
 
-      - name: Retrieve PLT Cache
-        uses: actions/cache@v1
-        id: plt-cache
-        with:
-          path: priv/plts
-          key: ${{ runner.os }}-${{ matrix.otp }}-${{ matrix.elixir }}-plts-${{ hashFiles(format('{0}{1}', github.workspace, '/mix.lock')) }}
-
-      - name: Create PLTs
-        if: steps.plt-cache.outputs.cache-hit != 'true'
+      - name: Run dialyzer
         run: |
           mkdir -p priv/plts
-          mix dialyzer --plt
-
-      - name: Run dialyzer
-        run: mix dialyzer --no-check
+          mix dialyzer
