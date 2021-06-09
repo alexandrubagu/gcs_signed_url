@@ -15,10 +15,10 @@ defmodule GcsSignedUrl.QueryStringTest do
           iso_date_time,
           headers,
           500,
-          foo: "bar"
+          foo: "bar and baz"
         )
 
-      assert "X-Goog-Algorithm=GOOG4-RSA-SHA256&X-Goog-Credential=project%40gcs_signed_url.iam.gserviceaccount.com%2Fsome-credential-scope&X-Goog-Date=some-date-time&X-Goog-Expires=500&X-Goog-SignedHeaders=some-signed-headers&foo=bar" ==
+      assert "X-Goog-Algorithm=GOOG4-RSA-SHA256&X-Goog-Credential=project%40gcs_signed_url.iam.gserviceaccount.com%2Fsome-credential-scope&X-Goog-Date=some-date-time&X-Goog-Expires=500&X-Goog-SignedHeaders=some-signed-headers&foo=bar%20and%20baz" ==
                query_string
     end
   end
