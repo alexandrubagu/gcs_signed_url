@@ -75,7 +75,7 @@ defmodule GcsSignedUrl.MixProject do
       maintainers: ["Bagu Alexandru Bogdan", "Michael Ruoss"],
       licenses: ["Apache 2.0"],
       links: %{
-        "GitHub" => @source_url,
+        "GitHub" => @source_url
       }
     ]
   end
