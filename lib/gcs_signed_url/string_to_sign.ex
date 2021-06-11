@@ -92,7 +92,7 @@ defmodule GcsSignedUrl.StringToSign do
         "GoogleAccessId" => client_email,
         "Expires" => expires
       }
-      |> URI.encode_query()
+      |> QueryString.encode_query_rfc3986()
 
     string_to_sign = "#{verb}\n#{md5_digest}\n#{content_type}\n#{expires}\n#{resource}"
     url_template = "https://#{@host}#{resource}?#{query_string}&Signature=#SIGNATURE#"

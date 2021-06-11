@@ -50,7 +50,8 @@ defmodule GcsSignedUrl do
     %StringToSign{string_to_sign: string_to_sign, url_template: url_template} =
       StringToSign.generate_v2(client_email, bucket, filename, opts)
 
-    signature = Crypto.sign(string_to_sign, client) |> Base.encode64() |> URI.encode_www_form()
+    signature = Crypto.sign(string_to_sign, client) |> Base.encode64() |> encode_rfc3986()
+
     String.replace(url_template, "#SIGNATURE#", signature)
   end
 
@@ -65,7 +66,8 @@ defmodule GcsSignedUrl do
 
     case Crypto.sign(string_to_sign, oauth_config) do
       {:ok, signature} ->
-        url = String.replace(url_template, "#SIGNATURE#", signature)
+        encoded = encode_rfc3986(signature)
+        url = String.replace(url_template, "#SIGNATURE#", encoded)
         {:ok, url}
 
       error ->
@@ -149,4 +151,8 @@ defmodule GcsSignedUrl do
   end
 
   # coveralls-ignore-stop
+
+  defp encode_rfc3986(input) when is_binary(input) do
+    URI.encode(input, &URI.char_unreserved?/1)
+  end
 end
