@@ -18,7 +18,7 @@ defmodule GcsSignedUrl.MixProject do
       dialyzer: dialyzer(),
       docs: [
         main: "readme",
-        extras: ["README.md"],
+        extras: ["README.md", "CHANGELOG.md"],
         source_ref: "v#{@version}",
         source_url: @source_url
       ]
@@ -71,12 +71,11 @@ defmodule GcsSignedUrl.MixProject do
     [
       name: :gcs_signed_url,
       description: "Create Signed URLs for Google Cloud Storage in Elixir",
-      files: ["lib", "config", "mix.exs", "README*"],
-      maintainers: ["Bagu Alexandru Bogdan"],
+      files: ["lib", "config", "mix.exs", "README*", "LICENSE*", "CHANGELOG.md"],
+      maintainers: ["Bagu Alexandru Bogdan", "Michael Ruoss"],
       licenses: ["Apache 2.0"],
       links: %{
         "GitHub" => @source_url,
-        "Website" => "http://www.alexandrubagu.info"
       }
     ]
   end
