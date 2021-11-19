@@ -8,6 +8,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ## [0.4.4] - 2021-11-19
 
+### Deprecated
+
 - Deprecated: [V2 signing process](https://cloud.google.com/storage/docs/access-control/signed-urls-v2) is considered legacy. Deprecating `GcsSignedUrl.generate/4` in favor of `GcsSignedUrl.generate_v4/4`
 
 ## [0.4.3] - 2021-06-11
