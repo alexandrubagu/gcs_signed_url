@@ -20,6 +20,7 @@ defmodule GcsSignedUrl do
           expires: integer
         ]
 
+  @deprecated "Use GcsSignedUrl.generate_v4/4 instead. [V2 signing process is considered legacy](https://cloud.google.com/storage/docs/access-control/signed-urls-v2)"
   @doc """
   If the first argument is a `GcsSignedUrl.Client{}`: Generate V2 signed url using its private key.
 

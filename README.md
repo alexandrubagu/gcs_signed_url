@@ -1,4 +1,5 @@
 # gcs_signed_url - Create Signed URLs for Google Cloud Storage
+
 [![Build Status](https://github.com/alexandrubagu/gcs_signed_url/workflows/CI/badge.svg)](https://github.com/alexandrubagu/gcs_signed_url/actions?query=workflow%3ACI)
 [![Hex.pm](https://img.shields.io/hexpm/v/gcs_signed_url.svg?maxAge=2592000)](https://hex.pm/packages/gcs_signed_url)
 [![Hex.pm](https://img.shields.io/hexpm/dt/gcs_signed_url.svg?maxAge=2592000)](https://hex.pm/packages/gcs_signed_url)
@@ -23,12 +24,12 @@ end
 
 This library creates signed URLs for the Google Cloud Storage in three steps:
 
- 1. Create a string to sign (V2 and V4 signatures are supported)
- 2. Sign the string to sign with the private key of a Google service account (GSA)
- 3. Form the URL including the signature
+1.  Create a string to sign (use [V4 signing process](https://cloud.google.com/storage/docs/access-control/signing-urls-with-helpers) - [V2 signing process](https://cloud.google.com/storage/docs/access-control/signed-urls-v2) is stil supported but deprecated)
+2.  Sign the string to sign with the private key of a Google service account (GSA)
+3.  Form the URL including the signature
 
 The actual signing can be done on-premise on the machine your application is executed or it can be delegated to the
-Google IAM SignBlob API. The method of signing depends on your setup. Both methods work for creating V2 or V4 signatures.
+Google IAM SignBlob API. The method of signing depends on your setup. Both methods work for creating V4 or V2 (deprecated) signatures.
 
 ### Google IAM SingBlob API - Preferred on the GKE
 
@@ -61,6 +62,7 @@ In this scenario you have a service account key in form of a JSON file on your m
 private key to create the signature, no network calls are needed.
 
 1.  Load the client
+
     ```elixir
     iex> GcsSignedUrl.Client.load_from_file("/home/alexandrubagu/config/google.json")
     ```
@@ -72,8 +74,8 @@ private key to create the signature, no network calls are needed.
     iex> GcsSignedUrl.Client.load(service_account)
     ```
 
-2.  Generate signed url (V2)
+2.  Generate signed url
     ```elixir
-    GcsSignedUrl.generate(client, "my-bucket", "my-object.mp4")
-    GcsSignedUrl.generate(client, "my-bucket", "my-object.mp4", expires: GcsSignedUrl.hours_after(3))
+    GcsSignedUrl.generate_v4(client, "my-bucket", "my-object.mp4")
+    GcsSignedUrl.generate_v4(client, "my-bucket", "my-object.mp4", expires: GcsSignedUrl.hours_after(3))
     ```
