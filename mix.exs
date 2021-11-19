@@ -10,6 +10,7 @@ defmodule GcsSignedUrl.MixProject do
       version: @version,
       elixir: "~> 1.8",
       elixirc_paths: elixirc_paths(Mix.env()),
+      elixirc_options: [warnings_as_errors: true],
       package: package(),
       preferred_cli_env: cli_env(),
       start_permanent: Mix.env() == :prod,
