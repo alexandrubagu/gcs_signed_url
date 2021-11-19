@@ -14,6 +14,11 @@ defmodule GcsSignedUrl.ClientTest do
       assert client == Fixtures.client_from_json()
     end
 
+    test "returns correct data for correct map" do
+      client = MUT.load(Fixtures.client_from_json())
+      assert client == Fixtures.client_from_json()
+    end
+
     test "returns error for inexisting file" do
       assert {:error, _} = MUT.load("some_path/data.txt")
     end

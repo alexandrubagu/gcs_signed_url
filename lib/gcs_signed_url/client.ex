@@ -24,15 +24,22 @@ defmodule GcsSignedUrl.Client do
       iex> GcsSignedUrl.Client.load(service_account)
       %GcsSignedUrl.Client{...}
 
+      iex> client = GcsSignedUrl.Client.load(%{private_key: "...", client_email: "..."})
+      %GcsSignedUrl.Client{...}
+
       iex> GcsSignedUrl.Client.load("/home/alexandrubagu/config/google.json")
       %GcsSignedUrl.Client{...}
 
   """
   @spec load(map() | String.t()) :: __MODULE__.t()
-  def load(%{
-        "private_key" => private_key,
-        "client_email" => client_email
-      }) do
+  def load(%{"private_key" => private_key, "client_email" => client_email}) do
+    %__MODULE__{
+      private_key: private_key,
+      client_email: client_email
+    }
+  end
+
+  def load(%{private_key: private_key, client_email: client_email}) do
     %__MODULE__{
       private_key: private_key,
       client_email: client_email
