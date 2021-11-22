@@ -6,6 +6,10 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ## Unreleased
 
+## Changed
+
+- Use `Kernel.hd/1` insead of `(fn [x] -> x end).()` to pick the first (only) item in the list.
+
 ## [0.4.4] - 2021-11-19
 
 ### Deprecated
