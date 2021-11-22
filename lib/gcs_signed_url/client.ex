@@ -68,7 +68,7 @@ defmodule GcsSignedUrl.Client do
   def get_decoded_private_key(%__MODULE__{private_key: private_key}) do
     private_key
     |> :public_key.pem_decode()
-    |> (fn [x] -> x end).()
+    |> hd()
     |> :public_key.pem_entry_decode()
   end
 end
