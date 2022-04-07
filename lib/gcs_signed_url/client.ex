@@ -59,7 +59,9 @@ defmodule GcsSignedUrl.Client do
     end
   end
 
+  # coveralls-ignore-start, reason: no logic worth testing.
   def load_from_file(_), do: {:error, "Please provide a path for config"}
+  # coveralls-ignore-stop
 
   @doc """
   Creates a PEM binary from the given client's private_key and decodes it.
