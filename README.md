@@ -77,5 +77,5 @@ private key to create the signature, no network calls are needed.
 2.  Generate signed url
     ```elixir
     GcsSignedUrl.generate_v4(client, "my-bucket", "my-object.mp4")
-    GcsSignedUrl.generate_v4(client, "my-bucket", "my-object.mp4", expires: GcsSignedUrl.hours_after(3))
+    GcsSignedUrl.generate_v4(client, "my-bucket", "my-object.mp4", expires: 3 * 3600) # 3 hours
     ```
