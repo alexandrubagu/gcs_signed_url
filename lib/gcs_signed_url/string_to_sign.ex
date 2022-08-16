@@ -4,7 +4,7 @@ defmodule GcsSignedUrl.StringToSign do
   """
   alias GcsSignedUrl.{CanonicalRequest, Crypto, Headers, ISODateTime, QueryString}
 
-  @host "storage.googleapis.com"
+  @google_cloud_storage_host "storage.googleapis.com"
 
   @type t :: %__MODULE__{
           string_to_sign: String.t(),
@@ -36,12 +36,18 @@ defmodule GcsSignedUrl.StringToSign do
     additional_headers = Keyword.get(opts, :headers, [])
     additional_query_params = Keyword.get(opts, :query_params, [])
     valid_from = Keyword.get(opts, :valid_from, DateTime.utc_now())
+    host = Keyword.get(opts, :host, @google_cloud_storage_host)
 
-    resource = "/#{bucket}/#{filename}"
+    resource =
+      case host do
+        @google_cloud_storage_host -> "/#{bucket}/#{filename}"
+        _cname_host -> "/#{filename}"
+      end
+
     iso_date_time = ISODateTime.generate(valid_from)
     credential_scope = "#{iso_date_time.date}/auto/storage/goog4_request"
 
-    headers = Headers.create([host: @host] ++ additional_headers)
+    headers = Headers.create([host: host] ++ additional_headers)
 
     query_string =
       QueryString.create(
@@ -58,7 +64,7 @@ defmodule GcsSignedUrl.StringToSign do
     string_to_sign =
       "GOOG4-RSA-SHA256\n#{iso_date_time.datetime}\n#{credential_scope}\n#{Crypto.sha256(canonical_request)}"
 
-    url_template = "https://#{@host}#{resource}?#{query_string}&X-Goog-Signature=#SIGNATURE#"
+    url_template = "https://#{host}#{resource}?#{query_string}&X-Goog-Signature=#SIGNATURE#"
 
     %__MODULE__{
       string_to_sign: string_to_sign,
@@ -83,6 +89,7 @@ defmodule GcsSignedUrl.StringToSign do
     md5_digest = Keyword.get(opts, :md5_digest, "")
     content_type = Keyword.get(opts, :content_type, "")
     expires = Keyword.get(opts, :expires, GcsSignedUrl.hours_after(1))
+
     resource = "/#{bucket}/#{filename}"
 
     query_string =
@@ -93,7 +100,7 @@ defmodule GcsSignedUrl.StringToSign do
       |> QueryString.encode_query_rfc3986()
 
     string_to_sign = "#{verb}\n#{md5_digest}\n#{content_type}\n#{expires}\n#{resource}"
-    url_template = "https://#{@host}#{resource}?#{query_string}&Signature=#SIGNATURE#"
+    url_template = "https://#{@google_cloud_storage_host}#{resource}?#{query_string}&Signature=#SIGNATURE#"
 
     %__MODULE__{
       string_to_sign: string_to_sign,

@@ -17,7 +17,8 @@ defmodule GcsSignedUrl do
           headers: Keyword.t(),
           query_params: Keyword.t(),
           valid_from: DateTime.t(),
-          expires: integer
+          expires: integer,
+          host: String.t()
         ]
 
   @deprecated "Use GcsSignedUrl.generate_v4/4 instead. [V2 signing process is considered legacy](https://cloud.google.com/storage/docs/access-control/signed-urls-v2)"
