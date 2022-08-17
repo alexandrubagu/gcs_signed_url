@@ -27,11 +27,9 @@ defmodule GcsSignedUrl.StringToSignTest do
         )
 
       string_to_sign_parts = String.split(string_to_sign, "\n")
-      url_template_parts = String.split(url_template, "/")
 
       assert url_template =~ ~r/#SIGNATURE#/
       assert url_template =~ "https://bucket.example.com"
-      assert [_https, _empty, "bucket.example.com", _object_not_bucket] = url_template_parts
 
       assert 4 == Enum.count(string_to_sign_parts)
       assert "GOOG4-RSA-SHA256" == Enum.at(string_to_sign_parts, 0)
