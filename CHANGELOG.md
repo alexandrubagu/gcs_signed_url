@@ -9,6 +9,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 ## Changed
 
 - Use `Kernel.hd/1` insead of `(fn [x] -> x end).()` to pick the first (only) item in the list.
+- Add optional `:host` to `generate_v4/3` opts. See [Domain-named buckets](https://cloud.google.com/storage/docs/domain-name-verification) in the Google Cloud docs for more info.
+
 
 ## [0.4.4] - 2021-11-19
 
