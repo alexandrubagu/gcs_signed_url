@@ -100,7 +100,9 @@ defmodule GcsSignedUrl.StringToSign do
       |> QueryString.encode_query_rfc3986()
 
     string_to_sign = "#{verb}\n#{md5_digest}\n#{content_type}\n#{expires}\n#{resource}"
-    url_template = "https://#{@google_cloud_storage_host}#{resource}?#{query_string}&Signature=#SIGNATURE#"
+
+    url_template =
+      "https://#{@google_cloud_storage_host}#{resource}?#{query_string}&Signature=#SIGNATURE#"
 
     %__MODULE__{
       string_to_sign: string_to_sign,
