@@ -31,6 +31,21 @@ defmodule GcsSignedUrl.StringToSignTest do
       assert 4 == Enum.count(string_to_sign_parts)
       assert "GOOG4-RSA-SHA256" == Enum.at(string_to_sign_parts, 0)
     end
+
+    test "Generates string to sign and URL with custom domain" do
+      %MUT{string_to_sign: string_to_sign, url_template: url_template} =
+        MUT.generate_v4("project@gcs_signed_url.iam.gserviceaccount.com", "bucket", "object.jpg",
+          host: "bucket.example.com"
+        )
+
+      string_to_sign_parts = String.split(string_to_sign, "\n")
+
+      assert url_template =~ ~r/#SIGNATURE#/
+      assert url_template =~ "https://bucket.example.com"
+
+      assert 4 == Enum.count(string_to_sign_parts)
+      assert "GOOG4-RSA-SHA256" == Enum.at(string_to_sign_parts, 0)
+    end
   end
 
   describe "generate_v2/4" do
