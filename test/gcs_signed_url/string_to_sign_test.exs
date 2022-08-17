@@ -22,12 +22,17 @@ defmodule GcsSignedUrl.StringToSignTest do
       %MUT{string_to_sign: string_to_sign, url_template: url_template} =
         MUT.generate_v4("project@gcs_signed_url.iam.gserviceaccount.com", "bucket", "object.jpg",
           valid_from: valid_from,
-          expires: 123
+          expires: 123,
+          host: "bucket.example.com"
         )
 
       string_to_sign_parts = String.split(string_to_sign, "\n")
+      url_template_parts = String.split(url_template, "/")
 
       assert url_template =~ ~r/#SIGNATURE#/
+      assert url_template =~ "https://bucket.example.com"
+      assert [_https, _empty, "bucket.example.com", _object_not_bucket] = url_template_parts
+
       assert 4 == Enum.count(string_to_sign_parts)
       assert "GOOG4-RSA-SHA256" == Enum.at(string_to_sign_parts, 0)
     end
