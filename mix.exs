@@ -2,7 +2,7 @@ defmodule GcsSignedUrl.MixProject do
   use Mix.Project
 
   @source_url "https://github.com/alexandrubagu/gcs_signed_url"
-  @version "0.4.4"
+  @version "0.4.5"
 
   def project do
     [
