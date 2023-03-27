@@ -6,6 +6,12 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ## Unreleased
 
+## [0.4.6] - 2023-03-27
+
+### Chores
+
+Several dependencies where updated. See the release page for more information.
+
 ## [0.4.5] - 2022-08-18
 
 ### Added
@@ -15,7 +21,6 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 ### Changed
 
 - Use `Kernel.hd/1` insead of `(fn [x] -> x end).()` to pick the first (only) item in the list.
-
 
 ## [0.4.4] - 2021-11-19
 
