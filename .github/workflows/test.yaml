@@ -14,7 +14,7 @@ jobs:
     name: Test - OTP ${{matrix.otp}} / Elixir ${{matrix.elixir}}
     strategy:
       matrix:
-        otp: ["22.x", "23.x", "24.x", "25.x"]
+        otp: ["22.x", "23.x", "24.x", "25.x", 26.x]
         elixir: ["1.10.x", "1.11.x", "1.12.x", "1.13.x", "1.14.x"]
         exclude:
           # OTP 22
@@ -35,11 +35,15 @@ jobs:
             otp: "25.x"
           - elixir: "1.12.x"
             otp: "25.x"
+          # OTP 26
+          - elixir: "1.10.x"
+            otp: "26.x"
+          - elixir: "1.11.x"
+            otp: "26.x"
+          - elixir: "1.12.x"
+            otp: "26.x"
           - elixir: "1.13.x"
-            otp: "25.x"
-        include:
-          - elixir: "1.13.4"
-            otp: "25.x"
+            otp: "26.x"
     steps:
       - uses: actions/checkout@v1.0.0
 
@@ -47,6 +51,8 @@ jobs:
         with:
           otp-version: ${{matrix.otp}}
           elixir-version: ${{matrix.elixir}}
+          install-rebar: true
+          install-hex: true
 
       - name: Retrieve Build Cache
         uses: actions/cache@v3
@@ -62,8 +68,6 @@ jobs:
           path: deps
           key: ${{runner.os}}-${{matrix.otp}}-${{matrix.elixir}}-deps-${{ hashFiles(format('{0}{1}', github.workspace, '/mix.lock')) }}
 
-      - run: mix local.rebar --force
-      - run: mix local.hex --force
       - run: mix deps.get
       - run: mix compile --warnings-as-errors
       - run: mix test

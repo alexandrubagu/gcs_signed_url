@@ -14,7 +14,7 @@ jobs:
     strategy:
       matrix:
         elixir: [1.14.x]
-        otp: [25.x]
+        otp: [26.x]
     name: Check Code Quality
     steps:
       - uses: actions/checkout@v2
@@ -24,6 +24,8 @@ jobs:
         with:
           otp-version: ${{matrix.otp}}
           elixir-version: ${{matrix.elixir}}
+          install-rebar: true
+          install-hex: true
 
       - name: Retrieve Build Cache
         uses: actions/cache@v3
@@ -52,10 +54,7 @@ jobs:
 
       - name: Install Mix Dependencies
         if: steps.mix-cache.outputs.cache-hit != 'true'
-        run: |
-          mix local.rebar --force
-          mix local.hex --force
-          mix deps.get
+        run: mix deps.get
 
       - name: Check Formatting
         run: mix format --check-formatted
