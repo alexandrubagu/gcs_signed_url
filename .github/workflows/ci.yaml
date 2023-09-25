@@ -11,10 +11,6 @@ env:
 jobs:
   test:
     runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        elixir: [1.14.x]
-        otp: [26.x]
     name: Check Code Quality
     steps:
       - uses: actions/checkout@v2
@@ -22,8 +18,8 @@ jobs:
       - uses: erlef/setup-beam@v1
         id: beam
         with:
-          otp-version: ${{matrix.otp}}
-          elixir-version: ${{matrix.elixir}}
+          version-file: .tool-versions
+          version-type: strict
           install-rebar: true
           install-hex: true
 
