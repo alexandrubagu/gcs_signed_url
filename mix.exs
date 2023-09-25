@@ -2,13 +2,13 @@ defmodule GcsSignedUrl.MixProject do
   use Mix.Project
 
   @source_url "https://github.com/alexandrubagu/gcs_signed_url"
-  @version "0.4.6"
+  @version "0.5.0"
 
   def project do
     [
       app: :gcs_signed_url,
       version: @version,
-      elixir: "~> 1.8",
+      elixir: "~> 1.12",
       elixirc_paths: elixirc_paths(Mix.env()),
       elixirc_options: [warnings_as_errors: true],
       package: package(),

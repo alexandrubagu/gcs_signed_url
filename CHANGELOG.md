@@ -6,6 +6,12 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ## Unreleased
 
+## [0.5.0] - 2023-09-25
+
+### Chores
+
+Bump minimal Elixir version to 1.12.
+
 ## [0.4.6] - 2023-03-27
 
 ### Chores
