@@ -6,6 +6,11 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ## Unreleased
 
+### Changed
+
+- Use `Application.get_env/3` instead of `Application.compile_env/3` to avoid dialyzer errors.
+
+
 ## [0.5.0] - 2023-09-25
 
 ### Chores
