@@ -85,7 +85,7 @@ defmodule GcsSignedUrl do
 
   ## Examples
 
-      iex> client = %GcsSignedUrl.Client%{private_key: "...", client_email: "..."}
+      iex> client = %GcsSignedUrl.Client{private_key: "...", client_email: "..."}
       iex> GcsSignedUrl.generate_v4(client, "my-bucket", "my-object.mp4", verb: "PUT", expires: 1800, headers: ["Content-Type": "application/json"])
       "https://storage.googleapis.com/my-bucket/my-object.mp4?X-Goog-Expires=1800..."
 
@@ -140,7 +140,7 @@ defmodule GcsSignedUrl do
 
   ## Examples
 
-      iex> 10 |> GcsUrlSigner.hours_after
+      iex> 10 |> GcsSignedUrl.hours_after()
       1503599316
 
   """
