@@ -12,7 +12,6 @@ defmodule GcsSignedUrl.MixProject do
       elixirc_paths: elixirc_paths(Mix.env()),
       elixirc_options: [warnings_as_errors: true],
       package: package(),
-      preferred_cli_env: cli_env(),
       start_permanent: Mix.env() == :prod,
       deps: deps(),
       test_coverage: [tool: ExCoveralls],
@@ -30,6 +29,10 @@ defmodule GcsSignedUrl.MixProject do
     [
       extra_applications: [:logger]
     ]
+  end
+
+  def cli do
+    [preferred_envs: cli_env()]
   end
 
   defp cli_env do
