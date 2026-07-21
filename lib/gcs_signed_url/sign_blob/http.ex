@@ -10,12 +10,16 @@ defmodule GcsSignedUrl.SignBlob.HTTP do
 
   @spec post(String.t(), map(), String.t()) :: {:ok, Req.Response.t()} | {:error, Exception.t()}
   def post(service_account, body, access_token) do
-    [
+    global_opts = Application.get_env(:gcs_signed_url, :req_options, [])
+
+    request_opts = [
       url: @endpoint <> service_account <> ":signBlob",
       json: body,
       auth: {:bearer, access_token}
     ]
-    |> Keyword.merge(Application.get_env(:gcs_signed_url, :req_options, []))
+
+    global_opts
+    |> Keyword.merge(request_opts)
     |> Req.new()
     |> Req.post()
   end
