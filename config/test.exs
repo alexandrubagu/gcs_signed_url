@@ -1,3 +1,3 @@
 import Config
 
-config :gcs_signed_url, GcsSignedUrl.SignBlob.HTTP, GcsSignedUrl.SignBlob.HTTPMock
+config :gcs_signed_url, :req_options, plug: {Req.Test, GcsSignedUrl.SignBlob.HTTP}

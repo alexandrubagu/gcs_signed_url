@@ -5,12 +5,6 @@ defmodule GcsSignedUrl.Crypto do
 
   alias GcsSignedUrl.{Client, SignBlob}
 
-  @sign_blob_http Application.compile_env(
-                    :gcs_signed_url,
-                    GcsSignedUrl.SignBlob.HTTP,
-                    GcsSignedUrl.SignBlob.HTTP
-                  )
-
   @doc """
   If you pass a `%GcsSignedUrl.Client{}` as second argument, this function signs the given string with the given
   client's private key.
@@ -36,23 +30,13 @@ defmodule GcsSignedUrl.Crypto do
   end
 
   def sign(string_to_sign, oauth_config) do
-    with {:ok, %{body: raw_body}} <- do_post_request(string_to_sign, oauth_config),
-         {:ok, body} <- Jason.decode(raw_body),
-         %{"signedBlob" => signature} <- body do
-      {:ok, signature}
-    else
-      error -> format_error(error)
+    payload = %{payload: Base.encode64(string_to_sign)}
+
+    case SignBlob.HTTP.post(oauth_config.service_account, payload, oauth_config.access_token) do
+      {:ok, %Req.Response{body: %{"signedBlob" => signature}}} -> {:ok, signature}
+      {:ok, %Req.Response{body: body}} -> format_error(body)
+      {:error, exception} -> format_error(exception)
     end
-  end
-
-  defp do_post_request(string_to_sign, oauth_config) do
-    payload = Base.encode64(string_to_sign)
-
-    @sign_blob_http.post(
-      oauth_config.service_account,
-      %{payload: payload},
-      Authorization: "Bearer #{oauth_config.access_token}"
-    )
   end
 
   # coveralls-ignore-start, reason: no logic worth testing.
@@ -69,8 +53,8 @@ defmodule GcsSignedUrl.Crypto do
   defp format_error(%{"error" => %{"code" => code, "message" => message, "status" => status}}),
     do: {:error, "#{code} #{status}: #{message}"}
 
-  defp format_error(%{reason: reason}),
-    do: {:error, "Error during HTTP request: #{reason}"}
+  defp format_error(exception) when is_exception(exception),
+    do: {:error, "Error during HTTP request: #{Exception.message(exception)}"}
 
   defp format_error(_error),
     do: {:error, "An unexpected error occurred during the API call to the signBlob API."}
