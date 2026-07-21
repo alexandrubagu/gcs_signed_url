@@ -8,7 +8,7 @@
 
 ## Important
 
-This package works with Elixir >= 1.8 and Erlang/OTP >= 22.3
+This package works with Elixir >= 1.18 and Erlang/OTP >= 26
 
 ## Hex Installation
 
@@ -70,7 +70,7 @@ private key to create the signature, no network calls are needed.
     or
 
     ```elixir
-    iex> service_account = service_account_json_string |> Jason.decode!
+    iex> service_account = service_account_json_string |> JSON.decode!
     iex> GcsSignedUrl.Client.load(service_account)
     ```
 

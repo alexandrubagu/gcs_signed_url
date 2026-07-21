@@ -20,7 +20,7 @@ defmodule GcsSignedUrl.Client do
 
   ## Examples
 
-      iex> service_account = service_account_json_string |> Jason.decode!
+      iex> service_account = service_account_json_string |> JSON.decode!
       iex> GcsSignedUrl.Client.load(service_account)
       %GcsSignedUrl.Client{...}
 
@@ -54,7 +54,7 @@ defmodule GcsSignedUrl.Client do
   @spec load_from_file(String.t()) :: __MODULE__.t()
   def load_from_file(path) when is_binary(path) do
     with {:ok, content} <- File.read(path),
-         {:ok, config} <- Jason.decode(content) do
+         {:ok, config} <- JSON.decode(content) do
       load(config)
     end
   end
