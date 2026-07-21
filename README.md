@@ -16,7 +16,7 @@ Add `gcs_signed_url` to your list of dependencies in `mix.exs`:
 
 ```elixir
 def deps do
-  [{:gcs_signed_url, "~> 0.4"}]
+  [{:gcs_signed_url, "~> 0.5"}]
 end
 ```
 
@@ -24,14 +24,14 @@ end
 
 This library creates signed URLs for the Google Cloud Storage in three steps:
 
-1.  Create a string to sign (use [V4 signing process](https://cloud.google.com/storage/docs/access-control/signing-urls-with-helpers) - [V2 signing process](https://cloud.google.com/storage/docs/access-control/signed-urls-v2) is stil supported but deprecated)
+1.  Create a string to sign (use [V4 signing process](https://cloud.google.com/storage/docs/access-control/signing-urls-with-helpers) - [V2 signing process](https://cloud.google.com/storage/docs/access-control/signed-urls-v2) is still supported but deprecated)
 2.  Sign the string to sign with the private key of a Google service account (GSA)
 3.  Form the URL including the signature
 
-The actual signing can be done on-premise on the machine your application is executed or it can be delegated to the
+The actual signing can be done on-premise on the machine your application is executed on or it can be delegated to the
 Google IAM SignBlob API. The method of signing depends on your setup. Both methods work for creating V4 or V2 (deprecated) signatures.
 
-### Google IAM SingBlob API - Preferred on the GKE
+### Google IAM SignBlob API - Preferred on GKE
 
 If your application runs on the Google Kubernetes Engine, the preferred way of accessing Google Cloud services is
 through a [Workload Identity](https://cloud.google.com/kubernetes-engine/docs/how-to/workload-identity). In this
@@ -40,20 +40,30 @@ scenario, you run your application under a Kubernetes service account (KSA) whic
 through the SignBlob API.
 
 In this scenario, the GSA you get the access token for (`GSA_AUTH`) acts as a Google Service Account `GSA_SIGNER` and
-signs the URL on his behalf. This requires the `GSA_AUTH` go have the Google IAM permission
+signs the URL on its behalf. This requires the `GSA_AUTH` to have the Google IAM permission
 **iam.serviceAccounts.signBlob** on the `GSA_SIGNER`, e.g. by giving it the built in
 role **roles/iam.serviceAccountTokenCreator** on `GSA_SIGNER`.
 
-`GSA_AUTH` and `GSA_SIGNER` can also be the same service account in which case he needs to have the permission
+`GSA_AUTH` and `GSA_SIGNER` can also be the same service account in which case it needs to have the permission
 **iam.serviceAccounts.signBlob** on itself.
 
 #### Example
 
+With [Goth](https://github.com/peburrows/goth) started under your application's supervision tree
+(e.g. `{Goth, name: MyApp.Goth}`):
+
 ```elixir
-iex> {:ok, %{token: access_token}} = Goth.Token.for_scope("https://www.googleapis.com/auth/devstorage.read_write")
+iex> {:ok, %{token: access_token}} = Goth.fetch(MyApp.Goth)
 iex> oauth_config = %GcsSignedUrl.SignBlob.OAuthConfig{service_account: "project@gcs_signed_url.iam.gserviceaccount.com", access_token: access_token}
-iex> GcsSignedUrl.generate_v4(oauth_config, "my-bucket", "my-object.jpg", verb: "PUT", expires: 1800, headers: ["Content-Type": "application/jpeg"])
+iex> GcsSignedUrl.generate_v4(oauth_config, "my-bucket", "my-object.jpg", verb: "PUT", expires: 1800, headers: ["Content-Type": "image/jpeg"])
 {:ok, "https://storage.googleapis.com/my-bucket/my-object.jpg?X-Goog-Expires=1800..."}
+```
+
+The requests to the SignBlob API are made with [Req](https://hex.pm/packages/req). Options passed to
+`Req.new/1` can be customized via the `:req_options` application environment, e.g.:
+
+```elixir
+config :gcs_signed_url, :req_options, connect_options: [proxy: {:http, "proxy.example.com", 8080, []}]
 ```
 
 ### On-Premise Signing
@@ -64,14 +74,14 @@ private key to create the signature, no network calls are needed.
 1.  Load the client
 
     ```elixir
-    iex> GcsSignedUrl.Client.load_from_file("/home/alexandrubagu/config/google.json")
+    iex> client = GcsSignedUrl.Client.load_from_file("/home/alexandrubagu/config/google.json")
     ```
 
     or
 
     ```elixir
     iex> service_account = service_account_json_string |> JSON.decode!
-    iex> GcsSignedUrl.Client.load(service_account)
+    iex> client = GcsSignedUrl.Client.load(service_account)
     ```
 
 2.  Generate signed url
