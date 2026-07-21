@@ -50,9 +50,9 @@ defmodule GcsSignedUrl.MixProject do
       {:dialyxir, "~> 1.0", only: [:dev, :test], runtime: false},
       {:ex_doc, "~> 0.21", only: :dev, runtime: false},
       {:excoveralls, "~> 0.13", only: :test},
-      {:mox, "~> 1.0", only: :test},
-      {:httpoison, "~> 2.0"},
-      {:jason, "~> 1.2"}
+      {:jason, "~> 1.2"},
+      {:plug, "~> 1.16", only: :test},
+      {:req, "~> 0.6"}
     ]
   end
 
