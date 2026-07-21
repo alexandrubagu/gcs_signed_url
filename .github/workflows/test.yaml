@@ -1,4 +1,4 @@
-name: Run tests on versions according to .tool-versions
+name: Run tests on supported Elixir/OTP versions
 on:
   push:
     branches: [master]
@@ -10,33 +10,19 @@ env:
 
 jobs:
   test:
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-latest
     name: Test - OTP ${{matrix.otp}} / Elixir ${{matrix.elixir}}
     strategy:
       matrix:
-        otp: ["22.x", "23.x", "24.x", "25.x", 26.x]
-        elixir: ["1.12.x", "1.13.x", "1.14.x", "1.15.x"]
-        exclude:
-          # OTP 22
-          - elixir: "1.14.x"
-            otp: "22.x"
-          - elixir: "1.15.x"
-            otp: "22.x"
-          # OTP 23
-          - elixir: "1.15.x"
-            otp: "23.x"
-          # OTP 25
-          - elixir: "1.12.x"
-            otp: "25.x"
-          # OTP 26
-          - elixir: "1.12.x"
-            otp: "26.x"
-          - elixir: "1.13.x"
-            otp: "26.x"
-          - elixir: "1.14.x"
-            otp: "26.x"
+        include:
+          - { elixir: "1.18.x", otp: "26.x" }
+          - { elixir: "1.18.x", otp: "27.x" }
+          - { elixir: "1.19.x", otp: "27.x" }
+          - { elixir: "1.19.x", otp: "28.x" }
+          - { elixir: "1.20.x", otp: "28.x" }
+          - { elixir: "1.20.x", otp: "29.x" }
     steps:
-      - uses: actions/checkout@v1.0.0
+      - uses: actions/checkout@v4
 
       - uses: erlef/setup-beam@v1
         with:
@@ -46,14 +32,14 @@ jobs:
           install-hex: true
 
       - name: Retrieve Build Cache
-        uses: actions/cache@v3
+        uses: actions/cache@v4
         id: build-folder-cache
         with:
           path: _build
           key: ${{ runner.os }}-${{ matrix.otp }}-${{ matrix.elixir }}-build-${{ hashFiles(format('{0}{1}', github.workspace, '/mix.lock')) }}
 
       - name: Retrieve Mix Dependencies Cache
-        uses: actions/cache@v3
+        uses: actions/cache@v4
         id: deps-cache
         with:
           path: deps

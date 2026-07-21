@@ -8,7 +8,7 @@ defmodule GcsSignedUrl.MixProject do
     [
       app: :gcs_signed_url,
       version: @version,
-      elixir: "~> 1.12",
+      elixir: "~> 1.18",
       elixirc_paths: elixirc_paths(Mix.env()),
       elixirc_options: [warnings_as_errors: true],
       package: package(),
@@ -50,7 +50,6 @@ defmodule GcsSignedUrl.MixProject do
       {:dialyxir, "~> 1.0", only: [:dev, :test], runtime: false},
       {:ex_doc, "~> 0.21", only: :dev, runtime: false},
       {:excoveralls, "~> 0.13", only: :test},
-      {:jason, "~> 1.2"},
       {:plug, "~> 1.16", only: :test},
       {:req, "~> 0.6"}
     ]

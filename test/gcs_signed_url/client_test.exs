@@ -17,6 +17,10 @@ defmodule GcsSignedUrl.ClientTest do
     test "returns error for inexisting file" do
       assert {:error, _} = MUT.load("some_path/data.txt")
     end
+
+    test "returns a native JSON error tuple for a file with invalid JSON" do
+      assert {:error, {:invalid_byte, _, _}} = MUT.load("test/gcs_config_invalid.json")
+    end
   end
 
   describe "get_decoded_private_key/1" do

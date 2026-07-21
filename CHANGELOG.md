@@ -9,6 +9,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 ### Changed
 
 - Replaced HTTPoison with [Req](https://hex.pm/packages/req) as the HTTP client for the signBlob API.
+- Replaced Jason with Elixir's built-in `JSON` module; the Jason dependency was removed and the
+  minimal Elixir version was bumped to 1.18.
 
 ## [0.5.0] - 2023-09-25
 
