@@ -40,6 +40,17 @@ defmodule GcsSignedUrl.CryptoTest do
       assert message =~ ~r/Make sure the access_token/
     end
 
+    test "returns error with details upon non-JSON response from API", %{
+      oauth_config: oauth_config,
+      string_to_sign: string_to_sign
+    } do
+      MockSetup.sign(error: :not_json)
+      assert {:error, message} = MUT.sign(string_to_sign, oauth_config)
+
+      assert message ==
+               "An unexpected HTTP response (status 301) was received during the API call to the signBlob API: Not JSON"
+    end
+
     test "returns error with details if there's network problems", %{
       oauth_config: oauth_config,
       string_to_sign: string_to_sign

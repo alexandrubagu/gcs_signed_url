@@ -40,6 +40,11 @@ defmodule GcsSignedUrl.MockSetup.Crypto do
 
         :unexpected ->
           Req.Test.json(conn, %{"something" => "unexpected"})
+
+        :not_json ->
+          conn
+          |> Plug.Conn.put_status(301)
+          |> Req.Test.text("Not JSON")
       end
     end)
 
