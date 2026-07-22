@@ -34,29 +34,43 @@ defmodule GcsSignedUrl.Crypto do
 
     case SignBlob.HTTP.post(oauth_config.service_account, payload, oauth_config.access_token) do
       {:ok, %Req.Response{body: %{"signedBlob" => signature}}} -> {:ok, signature}
-      {:ok, %Req.Response{body: body}} -> format_error(body)
-      {:error, exception} -> format_error(exception)
+      {:ok, %Req.Response{body: body, status: status}} -> format_error(body, status)
+      {:error, exception} -> format_error(exception, nil)
     end
   end
 
   # coveralls-ignore-start, reason: no logic worth testing.
-  defp format_error(%{"error" => %{"code" => 401, "message" => message}}),
+  defp format_error(
+         %{"error" => %{"code" => 401, "message" => message}},
+         _http_status
+       ),
+       do:
+         {:error,
+          "401 UNAUTHENTICATED: #{message} Make sure the access_token is valid and did not expire."}
+
+  defp format_error(
+         %{"error" => %{"code" => 403, "message" => message}},
+         _http_status
+       ),
+       do:
+         {:error,
+          "403 PERMISSION_DENIED: #{message} Make sure the authorized SA has role roles/iam.serviceAccountTokenCreator on the SA passed in the URL."}
+
+  defp format_error(
+         %{"error" => %{"code" => code, "message" => message, "status" => status}},
+         _http_status
+       ),
+       do: {:error, "#{code} #{status}: #{message}"}
+
+  defp format_error(body, status) when is_binary(body) and is_integer(status),
     do:
       {:error,
-       "401 UNAUTHENTICATED: #{message} Make sure the access_token is valid and did not expire."}
+       "An unexpected HTTP response (status #{status}) was received during the API call to the signBlob API: #{body}"}
 
-  defp format_error(%{"error" => %{"code" => 403, "message" => message}}),
-    do:
-      {:error,
-       "403 PERMISSION_DENIED: #{message} Make sure the authorized SA has role roles/iam.serviceAccountTokenCreator on the SA passed in the URL."}
-
-  defp format_error(%{"error" => %{"code" => code, "message" => message, "status" => status}}),
-    do: {:error, "#{code} #{status}: #{message}"}
-
-  defp format_error(exception) when is_exception(exception),
+  defp format_error(exception, _) when is_exception(exception),
     do: {:error, "Error during HTTP request: #{Exception.message(exception)}"}
 
-  defp format_error(_error),
+  defp format_error(_error, _status),
     do: {:error, "An unexpected error occurred during the API call to the signBlob API."}
 
   # coveralls-ignore-stop
