@@ -76,7 +76,7 @@ defmodule GcsSignedUrl.MixProject do
       description: "Create Signed URLs for Google Cloud Storage in Elixir",
       files: ["lib", "config", "mix.exs", "README*", "LICENSE*", "CHANGELOG.md"],
       maintainers: ["Bagu Alexandru Bogdan", "Michael Ruoss"],
-      licenses: ["Apache 2.0"],
+      licenses: ["Apache-2.0"],
       links: %{
         "GitHub" => @source_url
       }
