@@ -6,6 +6,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ## Unreleased
 
+## [0.6.0] - 2026-07-23
+
 ### Changed
 
 - Replaced HTTPoison with [Req](https://hex.pm/packages/req) as the HTTP client for the signBlob API.
