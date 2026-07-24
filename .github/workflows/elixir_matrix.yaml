@@ -6,25 +6,13 @@ on:
     branches: [master]
 jobs:
   test:
-    uses: mruoss/action_elixir_run_tests/.github/workflows/elixir-run-tests.yml@v2.3.2
+    uses: mruoss/action_elixir_run_tests/.github/workflows/elixir-run-tests.yml@v2.3.3
     with:
       checkout: true
       warnings-as-errors: true
       with-kubernetes: false
       include-integration-tests: false
       extra_excludes: |
-        - elixir: "1.15"
-          otp: "24"
-        - elixir: "1.15"
-          otp: "25"
-        - elixir: "1.15"
-          otp: "26"
-        - elixir: "1.15"
-          otp: "27"
-        - elixir: "1.15"
-          otp: "28"
-        - elixir: "1.15"
-          otp: "29"
         - elixir: "1.16"
           otp: "24"
         - elixir: "1.16"
